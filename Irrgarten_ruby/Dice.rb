@@ -28,7 +28,7 @@ class Dice
     @@MAX_ATTACK = 3
 
     # Max protection of shields
-    @@MAX_PROTECTION = 2
+    @@MAX_SHIELD = 2
 
     # Random numbers and booleans generator. In this case the use of a 
     # class variable isnt recommended, because if the generator object is
@@ -90,9 +90,9 @@ class Dice
         return @generator.rand(@@MAX_ATTACK)
     end
 
-    # Return a random value between [0, MAX_PROTECTION[
+    # Return a random value between [0, MAX_SHIELD[
     def self.shield_power
-        return @generator.rand(@@MAX_PROTECTION)
+        return @generator.rand(@@MAX_SHIELD)
     end
 
     # Return the uses a weapon or shield will have, a number between 

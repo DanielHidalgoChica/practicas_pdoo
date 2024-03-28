@@ -89,8 +89,7 @@ public class Dice {
      * @return 1(true) if the player must be revived or 0 if not
      */
     public static boolean resurrectPlayer(){
-        if(generator.nextFloat()<RESURRECT_PROB) return true;
-        else return false;
+        return generator.nextFloat()<RESURRECT_PROB;
     }
     
     /**
@@ -99,7 +98,7 @@ public class Dice {
      * is a number between [0,WEAPONS_REWARD]
      */
     public static int weaponsReward(){
-        return generator.nextInt(0,WEAPONS_REWARD+1);
+        return generator.nextInt(WEAPONS_REWARD+1);
     }
     
     /**
@@ -108,7 +107,7 @@ public class Dice {
      * is a number between [0,SHIELDS_REWARD]
      */
     public static int shieldsReward(){
-        return generator.nextInt(0,SHIELDS_REWARD+1);
+        return generator.nextInt(SHIELDS_REWARD+1);
     }
     /**
      * Decide how many health points will the player earn when winning a combat
@@ -116,7 +115,7 @@ public class Dice {
      * is a number between [0,HEALTH_REWARD]
      */
     public static int healthReward(){
-        return generator.nextInt(0,HEALTH_REWARD+1);
+        return generator.nextInt(HEALTH_REWARD+1);
     }
     
     /**
@@ -141,7 +140,7 @@ public class Dice {
      * between [0,MAX_USES]
      */
     public static int usesLeft(){
-        return generator.nextInt(0,MAX_USES+1);
+        return generator.nextInt(MAX_USES+1);
     }
     
     /**

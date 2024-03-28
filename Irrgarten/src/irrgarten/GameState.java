@@ -15,7 +15,7 @@ public class GameState {
     private String log;
     
     /**
-     * Paremeterized constructor
+     * Paremetrized constructor
      * @param labyrinth
      * @param players
      * @param monsters
