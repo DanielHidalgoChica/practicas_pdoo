@@ -23,7 +23,7 @@ public class Monster {
       * @param col Column positioning fo the monster
     */
 
-    Monster(String name, float intelligence, float strength, float health, int row, int col) {
+    public Monster(String name, float intelligence, float strength, float health, int row, int col) {
         this.name = name;
         this.intelligence = intelligence;
         this.strength = strength;
@@ -32,13 +32,34 @@ public class Monster {
         this.col = col; 
     }
 
-    boolean dead() {
+    public boolean dead() {
         return (health <= 0);
     }
 
-    float attack(){
+    public float attack(){
         return Dice.intensity(this.strength);
     }
     
-      
+    void setPos(int row, int col) {
+        this.row = row;
+        this.col = col;
+    }
+
+    public String toString(){
+        String ret = "Monster State"
+                    + "\nName:" + this.name
+                    + "\nIntelligence:" + Float.toString(intelligence)
+                    + "\nStrength:"+ Float.toString(strength)
+                    + "\nHealth:"+  Float.toString(health)
+                    + "\nPosition: (" + Integer.toString(row) + "," + Integer.toString(col) + ")\n";
+        return ret;
+    }
+
+    void gotWounded() {
+        health -= 1;
+    }
+
+    boolean defend(float receiveAttack) {
+        throw new UnsupportedOperationException();
+    }
 }

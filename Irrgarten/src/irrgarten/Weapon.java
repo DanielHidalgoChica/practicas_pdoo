@@ -13,7 +13,7 @@ public class Weapon {
      * @param power power of the weapon
      * @param uses  uses left for the weapon
      */
-    Weapon (float power, int uses){
+    public Weapon (float power, int uses){
         this.power = power;
         this.uses = uses;
     }
