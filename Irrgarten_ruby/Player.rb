@@ -4,7 +4,7 @@ class Player
     @@MAX_SHIELDS = 3
     @@INITIAL_HEALTH = 10
     @@HITS2LOSE = 3
-    def self.initialize(number, intelligence, strength, health, row, col) 
+    def initialize(number, intelligence, strength, health, row, col) 
         @number = number
         @name = "Player #{@number}"
         @intelligence = intelligence
@@ -63,33 +63,31 @@ class Player
     def receive_reward
     end
 
-    def receive_weapon
-    end
-
-    def receive_shield
-    end
-
     private
     def new_weapon
         r_power = Dice.weapon_power
         r_uses = Dice.weapon_uses
         new_weapon = Weapon.new(r_power, r_uses)
+        new_weapon
     end
 
     def sum_weapons
         sum = 0
         @weapons.each { |a_weapon| sum += a_weapon.attack }
+        sum
     end
 
     def new_shield
         r_protection = Dice.shield_power
         r_uses = Dice.uses_left
         new_shield = shield.new(shield_power, uses_left)
+        new_shield
     end
 
     def sum_shields
         sum = 0
         @shields.each { |a_shield| sum += a_shield.protect}
+        sum
     end
 
     def defensive_energy 

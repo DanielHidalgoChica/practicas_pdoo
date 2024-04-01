@@ -3,7 +3,7 @@ class Game
 
 @@MAX_ROUNDS = 10
 
-def self.initialze(players, monsters) 
+def initialze(players, monsters) 
     @players = players
     @monsters = monsters
     @current_player_index = Dice.who_starts(players.size)
@@ -11,12 +11,12 @@ def self.initialze(players, monsters)
 
     @log = ""
 
-    @labyrinth = Labyrinth.new_emtpy
-    self.configureLabyrinth
+    @labyrinth = Labyrinth.new_empty
+    self.configure_labyrinth
 end
 
 def finished
-    @labyrinth.hava_a_winner
+    @labyrinth.have_a_winner
 end
 
 def next_step(preferred_direction)
@@ -26,7 +26,7 @@ def get_game_state
     labyrinth_s = @labyrinth.to_s
     players_s = @players.to_s
     monsters_s = @monsters.to_s
-    current_p = current_player_index
+    current_p = @current_player_index
     winner = self.finished
     state = GameState.new(labyrinth_s, players_s, monsters_s, current_p, winner, @log)
     state
@@ -76,7 +76,6 @@ end
 def log_rounds(rounds, max)
   @log += "SE HAN PRODUCIDO #{rounds} RONDAS DE UN TOTAL DE #{max}\n"
 end
-
 
 
 end

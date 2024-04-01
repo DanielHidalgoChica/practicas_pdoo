@@ -8,7 +8,7 @@ class Labyrinth
 @@ROW = 0
 @@COL = 1
 
-def self.initialize(num_rows, num_cols, ex_col, ex_row)
+def initialize(num_rows, num_cols, ex_col, ex_row)
     @exit_row = ex_row
     @exit_col = ex_col
     @n_rows = num_rows
@@ -32,7 +32,7 @@ end
 private_class_method :new
 
 def have_a_winner
-    @players[@exit_row][@exit_col] != nil
+    (@players[@exit_row][@exit_col] != nil)
 end
 
 def to_s
@@ -68,7 +68,7 @@ def empty_pos(row, col)
 end
 
 def pos_ok(row, col)
-    valid_pos = (0 <= row) && (row < @n_rows) && (0 <= col) && (col < @n_cols)
+    (0 <= row) && (row < @n_rows) && (0 <= col) && (col < @n_cols)
 end
 
 def monster_pos(row, col) 
@@ -84,11 +84,11 @@ def combat_pos(row, col)
 end
 
 def can_step_on(row, col)
-    ret = valid_pos(row,col) || empty_pos(row,col)
-          || monster_pos(row, col) || exit_pos(row, col)
+    pos_ok(row,col) && (valid_pos(row,col) || empty_pos(row,col)
+          || monster_pos(row, col) || exit_pos(row, col))
 end
 
-def upadte_old_pos(row, col) 
+def update_old_pos(row, col) 
     if pos_ok(row, col) 
         if combat_pos(row, col) 
             @labyrinth[row][col] = @@MONSTER_CHAR
@@ -99,7 +99,6 @@ def upadte_old_pos(row, col)
 end
 
 def random_empty_pos
-    r_pos = Array.new(2,nil)
     r_row = Dice.random_pos(@n_rows)
     r_col = Dice.random_pos(@n_cols)
     
@@ -108,24 +107,22 @@ def random_empty_pos
         r_col = Dice.random_pos(@n_cols)
     end
 
-    r_pos[1] = r_row
-    r_pos[2] = r_col
-    r_pos
+    [r_row, r_col]
 end
 
 def dir2pos(row, col, direction)
     final_pos = Array.new(2, nil)
     case direction
-    when LEFT
+    when Directions::LEFT
         final_pos[0] = row-1
         final_pos[1] = col
-    when RIGHT
+    when Directions::RIGHT
         final_pos[0] = row+1
         final_pos[1] = col
-    when UP
+    when Directions::UP
         final_pos[0] = row
         final_pos[1] = col-1
-    when DOWN
+    when Directions::DOWN
         final_pos[0] = row
         final_pos[1] = col+1
     end
