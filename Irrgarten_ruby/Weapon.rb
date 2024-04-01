@@ -1,4 +1,4 @@
-#enconding:utf-8
+#encoding:utf-8
 module Irrgarten
 
 class Weapon
@@ -8,8 +8,8 @@ class Weapon
     # uses left for the weapon
     def initialize (power, uses)
         # Here the instance fields are being initialized
-        @power = power;
-        @uses = uses;
+        @power = power
+        @uses = uses
     end
 
     # Returns a float number representing the power of the weapon

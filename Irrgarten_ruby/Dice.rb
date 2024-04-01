@@ -60,11 +60,7 @@ class Dice
     # Returns a boolean representing if the player must be revived.
     # True if the player must be revived or false otherwise.
     def self.resurrect_player 
-        if (@generator.rand(1.0)<@@RESURRECT_PROB)
-            return true
-        else
-            return false
-        end
+        return (@generator.rand(1.0)<@@RESURRECT_PROB)
     end
 
     # Return the number of weapons the player should receive when winning
