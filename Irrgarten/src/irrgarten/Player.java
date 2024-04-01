@@ -23,17 +23,28 @@ public class Player {
       *      ...
     */
 
-    public Player(char number, float intelligence, float strength, float health, int row, int col, int consecutiveHits) {
+    public Player(char number, float intelligence, float strength, int row, int col) {
 	this.number = number;
 	this.name = "Player # " + Integer.toString(this.number);
 	this.intelligence = intelligence;
 	this.strength = strength;
-	this.health = health;
+	this.health = INITIAL_HEALTH;
 	this.row = row;
 	this.col = col;
-	this.consecutiveHits = consecutiveHits;
 	this.weapons = null;
 	this.shields = null;
+    }
+
+    public int getRow() {
+	return this.row;
+    }
+
+    public int getCol() {
+	return this.col;
+    }
+
+    public char getNumber(){
+	return this.number;
     }
 
     public void resurrect() {
@@ -65,26 +76,26 @@ public class Player {
     }
 
 
-    public boolean defend(float receiveAttack){
+    public boolean defend(float receivedAttack){
 	throw new UnsupportedOperationException();
     }
 
     public String toString(){
-        String ret = "Player State"
+        String ret = "\nPlayer State"
                     + "\nName:" + this.name
                     + "\nIntelligence:" + Float.toString(intelligence)
                     + "\nStrength:"+ Float.toString(strength)
                     + "\nHealth:"+  Float.toString(health)
                     + "\nPosition: (" + Integer.toString(row) + "," + Integer.toString(col) + ")\n"
                     + "\nConsecutive Hits:"+  Integer.toString(this.consecutiveHits)
-                    + "\nWeapons\n:"+  Integer.toString(this.consecutiveHits);
+                    + "\nWeapons:";
 	// Muestro las armas
 	for (Weapon aWeapon : this.weapons) {
-	    ret += "\t" + aWeapon.toString();
+	    ret +=  "\n\t" + aWeapon.toString();
 	}
-	ret += "\nShields:\n";
+	ret += "\nShields:";
 	for (Shield aShield : this.shields) {
-	    ret += "\t" + aShield.toString();
+	    ret += "\n\t" + aShield.toString();
 	}
         return ret;
     }

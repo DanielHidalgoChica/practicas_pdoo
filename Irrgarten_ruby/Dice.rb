@@ -64,19 +64,19 @@ class Dice
     end
 
     # Return the number of weapons the player should receive when winning
-    # a combat, a integer between [0,WEAPONS_REWARD[
+    # a combat, a integer between [0,WEAPONS_REWARD]
     def self.weapons_reward 
         return @generator.rand(@@WEAPONS_REWARD+1)
     end 
 
     # Return the number of shields the player should receive when winning
-    # a combat, a integer between [0,SHIELDS_REWARD[
+    # a combat, a integer between [0,SHIELDS_REWARD]
     def self.shields_reward 
         return @generator.rand(@@SHIELDS_REWARD+1)
     end  
 
     # Return the number of health points the player should receive when winning
-    # a combat, a integer between [0,SHIELDS_REWARD[
+    # a combat, a integer between [0,HEALTH_REWARD]
     def self.health_reward 
         return @generator.rand(@@HEALTH_REWARD+1)
     end  

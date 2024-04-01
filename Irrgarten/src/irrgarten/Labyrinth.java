@@ -40,7 +40,12 @@ public class Labyrinth {
 	    }
 	}
 
+
 	this.labyrinth[exRow][exCol] = Labyrinth.EXIT_CHAR;
+    }
+
+    public Labyrinth() {
+	this (1,1,0,0);
     }
 
     public boolean haveAWinner(){
@@ -80,7 +85,7 @@ public class Labyrinth {
         throw new UnsupportedOperationException();
     }
 
-    public Monster putPlayer2D (){
+    private Monster putPlayer2D (){
         throw new UnsupportedOperationException();
     }
 
@@ -89,8 +94,8 @@ public class Labyrinth {
     }
 
     private boolean PosOK(int row, int col){
-	boolean valid_pos = (0 <= row) && (row <= this.nRows) && (0 <= col) && (col <= this.nCols);
-	return valid_pos;
+	boolean validPos = (0 <= row) && (row < this.nRows) && (0 <= col) && (col < this.nCols);
+	return validPos;
     }
 
     private boolean monsterPos(int row, int col){

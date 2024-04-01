@@ -46,12 +46,12 @@ public class Monster {
     }
 
     public String toString(){
-        String ret = "Monster State"
+        String ret = "\nMonster State"
                     + "\nName:" + this.name
                     + "\nIntelligence:" + Float.toString(intelligence)
                     + "\nStrength:"+ Float.toString(strength)
                     + "\nHealth:"+  Float.toString(health)
-                    + "\nPosition: (" + Integer.toString(row) + "," + Integer.toString(col) + ")\n";
+                    + "\nPosition: (" + Integer.toString(row) + "," + Integer.toString(col) + ")";
         return ret;
     }
 
