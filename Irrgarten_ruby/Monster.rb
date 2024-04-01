@@ -3,17 +3,17 @@ module Irrgarten
 class Monster
    @@INITIAL_HEALTH = 5
    
-   def self.initialize(name, intelligence, strength, health, row, col)
+   def initialize(name, intelligence, strength, health, row, col)
        @name = name 
-       @intelligence= intelligence
-       @strength= strength
-       @health= health
-       @row= row
-       @col= col
+       @intelligence = intelligence
+       @strength = strength
+       @health = health
+       @row = row
+       @col = col
    end
 
    def dead 
-       health <= 0
+       @health <= 0
    end
 
    def attack
