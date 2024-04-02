@@ -17,23 +17,23 @@ public class Labyrinth {
     private int exitCol;
     
     // Matrices
-    private Monster[][] monsters = new Monster[nRows][nCols];
-    private Player[][] players = new Player[nRows][nCols];
-    private char labyrinth[][] =  new char[nRows][nCols];
+    private Monster[][] monsters;
+    private Player[][] players;
+    private char labyrinth[][];
 
     // Constructor provisional porque no tengo ni idea
     public Labyrinth(int nRows, int nCols, int exitRow, int exitCol){
-	this.exitRow = exRow;
-	this.exitCol = exCol;
+	this.exitRow = exitRow;
+	this.exitCol = exitCol;
 	this.nRows = numRows;
 	this.nCols = numCols;
-	
+	private Monster[][] monsters = new Monster[nRows][nCols];
+        private Player[][] players = new Player[nRows][nCols];
+        private char labyrinth[][] =  new char[nRows][nCols];
 	for (int i = 0; i < nRows; i++) {
 	    for (int j = 0; j < nCols; j++){
-		// Todas las referencias nulas
-		// y todas las casillas vacías, veré
-		// si con los otros métodos puedo hacer algo
-		// que tenga sentido
+	        // Iniciar todas las referencias a null para evitar valores basura
+	        // y poner el laberinto a casillas vacías
 		this.monsters[i][j] = null;
 		this.players[i][j] = null;
 		this.labyrinth[i][j] = Labyrinth.EMPTY_CHAR;
