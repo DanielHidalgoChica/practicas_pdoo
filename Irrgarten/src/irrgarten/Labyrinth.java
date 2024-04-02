@@ -22,7 +22,7 @@ public class Labyrinth {
     private char labyrinth[][] =  new char[nRows][nCols];
 
     // Constructor provisional porque no tengo ni idea
-    public Labyrinth(int numRows, int numCols, int exCol, int exRow) {
+    public Labyrinth(int nRows, int nCols, int exitRow, int exitCol){
 	this.exitRow = exRow;
 	this.exitCol = exCol;
 	this.nRows = numRows;
@@ -53,8 +53,15 @@ public class Labyrinth {
     }
 
     public String toString(){
-	// Para más tarde
-	return "HAY QUE HACER ESTE TO_STRING DE LA CLAS Labyrinth";
+        String labyrinth_string = "";
+        for (int i = 0; i < nRows; i ++){
+            labyrinth_string += "|";
+            for (int j = 0; j < nCols; j++){
+                labyrinth_string+=labyrinth[i][j] + "|";
+            }
+            labyrinth_string += "\n";
+        }
+        return labyrinth_string;
     }
 
     public void addMonster(int row, int col, Monster monster){
@@ -93,7 +100,7 @@ public class Labyrinth {
 	return (this.labyrinth[row][col] == Labyrinth.EMPTY_CHAR);
     }
 
-    private boolean PosOK(int row, int col){
+    private boolean posOK(int row, int col){
 	boolean validPos = (0 <= row) && (row < this.nRows) && (0 <= col) && (col < this.nCols);
 	return validPos;
     }
@@ -133,7 +140,7 @@ public class Labyrinth {
 	int rRow = Dice.randomPos(this.nRows);
 	int rCol = Dice.randomPos(this.nCols);
 
-	while (!PosOK(rRow, rCol) || !emptyPos(rRow, rCol)) {
+	while (!posOK(rRow, rCol) || !emptyPos(rRow, rCol)) {
 	    rRow = Dice.randomPos(this.nRows);
 	    rCol = Dice.randomPos(this.nCols);
 	}
@@ -144,25 +151,17 @@ public class Labyrinth {
     }
 
     private int[] dir2pos(int row, int col, Directions direction) {
-	int[] final_pos = new int[2]; 
-	switch (direction){
-	    case LEFT:
-		final_pos[0] = row-1;
-		final_pos[1] = col;
-		break;
-	    case RIGHT:
-		final_pos[0] = row+1;
-		final_pos[1] = col;
-		break;
-	    case UP:
-		final_pos[0] = row;
-		final_pos[1] = col-1; // Porque la casilla de arriba a la izquierda es la (0,0)
-		break;
-	    case DOWN:
-		final_pos[0] = row;
-		final_pos[1] = col+1; // Porque la casilla de arriba a la izquierda es la (0,0)
-		break;
-	}
-	return final_pos;
+        int [] pos = {row,col};
+        switch (direction){
+            case LEFT: 
+                pos[1]--;  break;
+            case RIGHT:
+                pos[1]++;  break;
+            case UP:
+                pos[0]--;  break;
+            case DOWN:
+                pos[0]++;  break; 
+        }
+        return pos;
     }
 }

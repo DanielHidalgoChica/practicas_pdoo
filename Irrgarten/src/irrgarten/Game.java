@@ -12,16 +12,23 @@ public class Game {
     private ArrayList<Player> players;
 
     // Parametrized
-    public Game(ArrayList<Player> players, ArrayList<Monster> monsters) {
-	this.players = players;
-	this.monsters = monsters;
-	// Escojo aleatoriamente un jugador para empezar
-	this.currentPlayerIndex = Dice.whoStarts(players.size());
-	this.currentPlayer = this.players.get(this.currentPlayerIndex);
-	
-	this.log = "";
-	this.labyrinth = new Labyrinth();
-	this.configureLabyrinth();
+    public Game(int nplayers){
+        log = "";
+        char number;
+        // Number of rows and columns
+        int nRows = 5, nCols = 5;
+        // int exitRow = Dice.randomPos(nRows), exitCol = Dice.randomPos(nCols);
+        int exitRow = 1, exitCol = 0;
+        players = new ArrayList<Player>(0);
+        for (int i = 0; i < nplayers; i++){
+            players.add(new Player((char)(i+'0'), Dice.randomIntelligence(), Dice.randomStrength()));
+        }
+        currentPlayerIndex = Dice.whoStarts(nplayers);
+        currentPlayer = players.get(currentPlayerIndex);
+        monsters = new ArrayList<Monster> (0);
+        labyrinth = new Labyrinth(nRows,nCols,exitRow, exitCol);
+        configureLabyrinth();
+        
     }
 
     public boolean finished(){
@@ -45,8 +52,9 @@ public class Game {
     }
 
     private void configureLabyrinth(){
-	// Luego lo escribimos para configurar 
-	// un laberinto concreto
+Monster goblin = new Monster ("Goblin", Dice.randomIntelligence(), Dice.randomStrength());
+        labyrinth.addMonster(2,2,goblin);
+        monsters.add(goblin);
     }
 
     private void nextPlayer(){
@@ -80,31 +88,32 @@ public class Game {
     }
 
     private void logPlayerWon(){
-	this.log += "EL JUGADOR HA GANADO EL COMBATE\n";
+        log += "Player number " + currentPlayer.getNumber() + "has won. \n";
     }
 
     private void logMonsterWon(){
-	this.log += "EL MONSTRUO HA GANADO EL COMBATE\n";
+        log += "The monster has won\n";
     }
-
-    private void logResurrected() {
-	this.log += "EL JUGADOR HA RESUCITADO\n";
+    
+    private void logResurrected(){
+        log += "The player" + currentPlayer.getNumber() + " has resurrected.\n";
     }
-
-    private void logPlayerSkipTurn() {
-	this.log += "EL JUGADOR HA PERDIDO EL TURNO POR ESTAR MUERTO\n";
+    
+    private void logPlayerSkipTurn(){
+        log += "Player number " + currentPlayer.getNumber() + " has lost the turn"
+          + " because he was dead. \n";
     }
-
-    private void logPlayerNoOrders() {
-	this.log += "EL JUGADOR NO HA PODIDO SEGUIR LAS INSTRUCCIONES QUE SE LE HAN DADO\n";
+    
+    private void logPlayerNoOrders(){
+        log += "Player number " + currentPlayer.getNumber() + " couldn't follow the instructions from the human player.\n"; 
     }
-
-    private void logNoMonster() {
-	this.log += "EL JUGADOR SE HA MOVIDO A UNA CELDA VACÍA O NO LE HA SIDO POSIBLE MOVERSE\n";
+    
+    private void logNoMonster(){
+        log += "Player number " + currentPlayer.getNumber() + " couldn't move or moved to an empty box.\n";
     }
-
+    
     private void logRounds(int rounds, int max){
-	this.log += "SE HAN PRODUCIDO " + Integer.toString(rounds) + " RONDAS DE UN TOTAL DE " + Integer.toString(max) + "\n";
+        log += "Rounds passed: " + rounds + " / " + max + "\n"; 
     }
 
 

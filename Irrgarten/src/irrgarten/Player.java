@@ -29,10 +29,11 @@ public class Player {
 	this.intelligence = intelligence;
 	this.strength = strength;
 	this.health = INITIAL_HEALTH;
-	this.row = row;
-	this.col = col;
-	this.weapons = null;
-	this.shields = null;
+        this.setPos(0,0);
+        weapons = new ArrayList<Weapon>(0);
+        shields = new ArrayList<Shield> (0);
+        // Put the rest of the atributes to default
+        resurrect(); 
     }
 
     public int getRow() {
@@ -51,7 +52,7 @@ public class Player {
 	weapons.clear();
 	shields.clear();
 	health = INITIAL_HEALTH;
-	consecutiveHits = 0;
+	resetHits();
     }
 
     public void setPos(int row, int col){
@@ -151,6 +152,14 @@ public class Player {
 
     private void manageHit(float receivedAttack){
 	throw new UnsupportedOperationException();
+    }
+        
+    private void gotWounded(){
+        this.health-=HEALTH_DECREMENT;
+    }
+    
+    private void incConsecutiveHits(){
+        this.consecutiveHits++;
     }
 }
 

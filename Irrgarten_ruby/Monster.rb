@@ -8,8 +8,7 @@ class Monster
        @intelligence = intelligence
        @strength = strength
        @health = health
-       @row = row
-       @col = col
+    set_pos(0,0)
    end
 
    def dead 

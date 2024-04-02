@@ -8,9 +8,9 @@ class Labyrinth
 @@ROW = 0
 @@COL = 1
 
-def initialize(num_rows, num_cols, ex_col, ex_row)
-    @exit_row = ex_row
-    @exit_col = ex_col
+def initialize(num_rows, num_cols, exit_col, exit_row)
+    @exit_row = exit_row
+    @exit_col = exit_col
     @n_rows = num_rows
     @n_cols = num_cols
     @monsters = Array.new(@n_rows) {Array.new(@n_cols, nil)}
@@ -36,11 +36,21 @@ def have_a_winner
 end
 
 def to_s
-    "NO SÉ CÓMO HACER ESTE TO_STRING"
+string = ""
+    string = ""
+    @labyrinth.each do |row|
+        string <<  "|"
+        row.each do |box| 
+            string << "#{box} |"
+        end
+        string << "\n"
+    end
+
+    string
 end
 
 def add_monster(row, col, monster)
-    if (pos_ok(row,col))
+    if (pos_OK(row,col) && empty_pos(row,col))
         @monsters[row][col] = monster
         @labyrinth[row][col] = @@MONSTER_CHAR
         monster.set_pos(row,col)
@@ -67,7 +77,7 @@ def empty_pos(row, col)
     @labyrinth[row][col] == @@EMTPY_CHAR
 end
 
-def pos_ok(row, col)
+def pos_OK(row, col)
     (0 <= row) && (row < @n_rows) && (0 <= col) && (col < @n_cols)
 end
 
@@ -111,22 +121,19 @@ def random_empty_pos
 end
 
 def dir2pos(row, col, direction)
-    final_pos = Array.new(2, nil)
-    case direction
-    when Directions::LEFT
-        final_pos[0] = row-1
-        final_pos[1] = col
-    when Directions::RIGHT
-        final_pos[0] = row+1
-        final_pos[1] = col
-    when Directions::UP
-        final_pos[0] = row
-        final_pos[1] = col-1
-    when Directions::DOWN
-        final_pos[0] = row
-        final_pos[1] = col+1
-    end
-    final_pos
+def dir_2_pos(row,col,direction)
+        pos = Array.new(2, row, col)
+        case direction
+        when Irrgarten::Directions::LEFT
+            pos[1]=pos[1]-1
+        when Irrgarten::Directions::RIGHT
+            pos[1]=pos[1]+1
+        when Irrgarten::Directions::UP
+            pos[0]=pos[0]-1
+        when Irrgarten::Directions::UP
+            pos[0]=pos[0]+1
+        end
+        pos
 end
 
 end

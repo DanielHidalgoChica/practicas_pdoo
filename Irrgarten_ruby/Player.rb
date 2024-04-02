@@ -9,21 +9,17 @@ class Player
         @name = "Player #{@number}"
         @intelligence = intelligence
         @strength = strength
-        @health = health
-        @row = row
-        @col = col
-        @consecutive_hits = 0
-        @weapons = Array.new
-        @shields = Array.new
+        self.resurrect
+        set_pos(0,0)
     end
     
     attr_reader :row, :col, :number
 
     def resurrect 
-        @weapons.clear()
-        @shields.clear()
+        @weapons = Array.new
+        @shields = Array.new
         @health = @@INITIAL_HEALTH
-        @consecutive_hits = 0;
+        self.reset_hits
     end
 
     def set_pos(row, col)
@@ -97,7 +93,9 @@ class Player
     def reset_hits
         @consecutive_hits = 0
     end
-
+    def got_wounded
+        @health = @health - @@HEALTH_DECREMENT
+    end
     def inc_consecutive_hits
         @consecutive_hits = @consecutive_hits+1
     end
