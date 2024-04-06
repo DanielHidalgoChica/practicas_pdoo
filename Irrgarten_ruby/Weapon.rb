@@ -1,39 +1,40 @@
 #encoding:utf-8
 module Irrgarten
+    # The Irrgarten module contains classes related to weapons in the game.
 
-class Weapon
-    
-    # Parameterized constructor
-    # power power of the weapon
-    # uses left for the weapon
-    def initialize (power, uses)
-        # Here the instance fields are being initialized
-        @power = power
-        @uses = uses
-    end
+    class Weapon
+        # Represents a weapon in the game.
 
-    # Returns a float number representing the power of the weapon
-    def attack 
-        if (@uses > 0)
-            @uses=@uses-1
-            return @power
-        else
-            return 0
+        # Parameterized constructor
+        # @param power [Float] the power of the weapon
+        # @param uses [Integer] the number of uses left for the weapon
+        def initialize(power, uses)
+            # Initializes the instance fields of the weapon.
+            @power = power
+            @uses = uses
+        end
+
+        # Attacks with the weapon.
+        # @return [Float] the power of the weapon if it has uses left, otherwise 0
+        def attack
+            if @uses > 0
+                @uses -= 1
+                return @power
+            else
+                return 0
+            end
+        end
+
+        # Discards the weapon.
+        # @return [Boolean] true if the weapon should be discarded, false otherwise
+        def discard
+            return Dice.discard_element(@uses)
+        end
+
+        # Returns a string representation of the weapon.
+        # @return [String] a string containing the power and uses of the weapon
+        def to_s
+            return "W[#{@power}, #{@uses}]"
         end
     end
-    
-    # Decides if a weapon must be descarted, using the method DiscardElement
-    # of the Dice class
-    def discard 
-        return Dice.discard_element(@uses)
-    end 
-
-    # Print the uses and power of the weapon
-    # Return a string containing the information of the weapon
-    def to_s
-        return "W["+@power.to_s+","+@uses.to_s+"]"
-    end
-
-end
-
 end

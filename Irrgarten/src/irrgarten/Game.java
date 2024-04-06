@@ -1,6 +1,10 @@
 package irrgarten;
 import java.util.ArrayList;
 
+/**
+ * The Game class represents a game of Irrgarten.
+ * It manages the players, monsters, labyrinth, and game state.
+ */
 public class Game {
     public static final int MAX_ROUNDS = 10;
     private int currentPlayerIndex;
@@ -11,6 +15,11 @@ public class Game {
     private ArrayList<Monster> monsters;
     private ArrayList<Player> players;
 
+    /**
+     * Constructs a new Game object with the specified number of players.
+     *
+     * @param nplayers The number of players in the game.
+     */
     public Game(int nplayers){
         log = "";
         players = new ArrayList<Player>(0);
@@ -20,48 +29,65 @@ public class Game {
         currentPlayerIndex = Dice.whoStarts(nplayers);
         currentPlayer = players.get(currentPlayerIndex);
         monsters = new ArrayList<Monster> (0);
-        labyrinth = new Labyrinth(nRows,nCols,exitRow, exitCol);
         configureLabyrinth();
-        
     }
 
+    /**
+     * Checks if the game has finished.
+     *
+     * @return true if the game has finished, false otherwise.
+     */
     public boolean finished(){
-	return this.labyrinth.haveAWinner();
+        return this.labyrinth.haveAWinner();
     }
 
+    /**
+     * Makes the next step in the game with the specified preferred direction.
+     *
+     * @param preferredDirection The preferred direction to move in.
+     * @return true if the step was successful, false otherwise.
+     */
     public boolean nextStep(Directions preferredDirection) {
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * Gets the current game state.
+     *
+     * @return The current game state.
+     */
     public GameState getGameState() {
-	String labyrinth_s = labyrinth.toString();
-	String players_s = players.toString();
-	String monsters_s = monsters.toString();
-	int currentP = this.currentPlayerIndex;
-	boolean winner = this.finished();
+        String labyrinth_s = labyrinth.toString();
+        String players_s = players.toString();
+        String monsters_s = monsters.toString();
+        int currentP = this.currentPlayerIndex;
+        boolean winner = this.finished();
 
-	GameState state = new GameState(labyrinth_s, players_s, monsters_s, currentP, winner, this.log);
+        GameState state = new GameState(labyrinth_s, players_s, monsters_s, currentP, winner, this.log);
 
-	return state;
+        return state;
     }
 
     private void configureLabyrinth(){
+        int nRows = 5, nCols = 5;
+        int exitRow = 1, exitCol = 1;
+        labyrinth = new Labyrinth(nRows,nCols,exitRow, exitCol);
         Monster goblin = new Monster ("Goblin", Dice.randomIntelligence(), Dice.randomStrength());
         labyrinth.addMonster(2,2,goblin);
         monsters.add(goblin);
     }
 
     private void nextPlayer(){
-	// Itero sobre el array de jugadores 
-	// y actualizo la variable de currentPlayerIndex
-	int nPlayers = players.size();
-	if (currentPlayerIndex == nPlayers-1){
-	    currentPlayerIndex = 0;
-	} else {
-	    currentPlayerIndex++;
-	}
+        // Itero sobre el array de jugadores 
+        // y actualizo la variable de currentPlayerIndex
+        int nPlayers = players.size();
+        if (currentPlayerIndex == nPlayers-1){
+            currentPlayerIndex = 0;
+        } else {
+            currentPlayerIndex++;
+        }
 
-	currentPlayer = this.players.get(currentPlayerIndex);
+        currentPlayer = this.players.get(currentPlayerIndex);
     }
 
     private Directions actualDirection(Directions preferredDirection) {
@@ -69,8 +95,8 @@ public class Game {
     }
 
     private GameCharacter combat(Monster monster){
-	// No explicado en la práctica
-	return GameCharacter.MONSTER;
+        // No explicado en la práctica
+        return GameCharacter.MONSTER;
     }
 
     private void manageReward(GameCharacter winner) {
@@ -109,7 +135,5 @@ public class Game {
     private void logRounds(int rounds, int max){
         log += "Rounds passed: " + rounds + " / " + max + "\n"; 
     }
-
-
 }
 

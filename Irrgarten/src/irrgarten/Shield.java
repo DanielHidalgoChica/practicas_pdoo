@@ -5,14 +5,18 @@ package irrgarten;
  * Represents a shield from the Irrgarten game
  * @author luisvaldivieso
  */
+/**
+ * The Shield class represents a shield that offers protection and has a limited number of uses.
+ */
 public class Shield {
     private float protection;
     private int uses;
     
     /**
-     * Parameterized constructor
-     * @param protection Protection that the shield offer
-     * @param uses Uses left for the shield
+     * Parameterized constructor to create a Shield object.
+     * 
+     * @param protection the protection that the shield offers
+     * @param uses the number of uses left for the shield
      */
     Shield(float protection, int uses){
         this.protection = protection;
@@ -20,9 +24,9 @@ public class Shield {
     }
     
     /**
-     * Return the protection that the shield offer. If the shield has no uses
-     * left, the protection is 0.
-     * @return A float point number with the protection value
+     * Returns the protection that the shield offers. If the shield has no uses left, the protection is 0.
+     * 
+     * @return the protection value as a float
      */
     public float protect(){
         if (uses > 0){
@@ -33,8 +37,9 @@ public class Shield {
     }
     
     /**
-     * Decides if a shield must be discarded
-     * @return true if it must be discarded and false othewise
+     * Decides if a shield must be discarded.
+     * 
+     * @return true if the shield must be discarded, false otherwise
      */
     public boolean discard(){
         Dice dice = new Dice();
@@ -42,13 +47,11 @@ public class Shield {
     }
     
     /**
-     * Prints the protection and uses of the shield
-     * @return A string with information about the shield with the format
-     * "S[protection,uses]"
+     * Returns a string representation of the shield.
+     * 
+     * @return a string with information about the shield in the format "S[protection,uses]"
      */
     public String toString(){
         return "S["+protection+","+uses+"]";
     }
-    
-    
 }
