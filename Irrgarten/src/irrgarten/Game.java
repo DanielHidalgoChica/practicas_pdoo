@@ -2,7 +2,7 @@ package irrgarten;
 import java.util.ArrayList;
 
 public class Game {
-    public static int MAX_ROUNDS = 10;
+    public static final int MAX_ROUNDS = 10;
     private int currentPlayerIndex;
     private String log;
 
@@ -11,14 +11,8 @@ public class Game {
     private ArrayList<Monster> monsters;
     private ArrayList<Player> players;
 
-    // Parametrized
     public Game(int nplayers){
         log = "";
-        char number;
-        // Number of rows and columns
-        int nRows = 5, nCols = 5;
-        // int exitRow = Dice.randomPos(nRows), exitCol = Dice.randomPos(nCols);
-        int exitRow = 1, exitCol = 0;
         players = new ArrayList<Player>(0);
         for (int i = 0; i < nplayers; i++){
             players.add(new Player((char)(i+'0'), Dice.randomIntelligence(), Dice.randomStrength()));
@@ -52,7 +46,7 @@ public class Game {
     }
 
     private void configureLabyrinth(){
-Monster goblin = new Monster ("Goblin", Dice.randomIntelligence(), Dice.randomStrength());
+        Monster goblin = new Monster ("Goblin", Dice.randomIntelligence(), Dice.randomStrength());
         labyrinth.addMonster(2,2,goblin);
         monsters.add(goblin);
     }

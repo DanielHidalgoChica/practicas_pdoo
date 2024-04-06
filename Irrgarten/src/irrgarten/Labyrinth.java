@@ -3,13 +3,13 @@ package irrgarten;
 import java.util.ArrayList;
 
 public class Labyrinth {
-    public static char BLOCK_CHAR = 'X';
-    public static char EMPTY_CHAR = '-';
-    public static char MONSTER_CHAR = 'M';
-    public static char COMBAT_CHAR= 'C';
-    public static char EXIT_CHAR = 'E';
-    public static int ROW = 0;
-    public static int COL = 1;
+    public static final char BLOCK_CHAR = 'X';
+    public static final char EMPTY_CHAR = '-';
+    public static final char MONSTER_CHAR = 'M';
+    public static final char COMBAT_CHAR= 'C';
+    public static final char EXIT_CHAR = 'E';
+    public static final int ROW = 0;
+    public static final int COL = 1;
 
     private int nRows;
     private int nCols;
@@ -23,30 +23,26 @@ public class Labyrinth {
 
     // Constructor provisional porque no tengo ni idea
     public Labyrinth(int nRows, int nCols, int exitRow, int exitCol){
-	this.exitRow = exitRow;
-	this.exitCol = exitCol;
-	this.nRows = numRows;
-	this.nCols = numCols;
-	private Monster[][] monsters = new Monster[nRows][nCols];
-        private Player[][] players = new Player[nRows][nCols];
-        private char labyrinth[][] =  new char[nRows][nCols];
-	for (int i = 0; i < nRows; i++) {
-	    for (int j = 0; j < nCols; j++){
-	        // Iniciar todas las referencias a null para evitar valores basura
-	        // y poner el laberinto a casillas vacías
-		this.monsters[i][j] = null;
-		this.players[i][j] = null;
-		this.labyrinth[i][j] = Labyrinth.EMPTY_CHAR;
-	    }
-	}
+        this.exitRow = exitRow;
+        this.exitCol = exitCol;
+        this.nRows = nRows;
+        this.nCols = nCols;
+        monsters = new Monster[nRows][nCols];
+        players = new Player[nRows][nCols];
+        labyrinth =  new char[nRows][nCols];
+        for (int i = 0; i < nRows; i++) {
+            for (int j = 0; j < nCols; j++){
+                // Iniciar todas las referencias a null para evitar valores basura
+                // y poner el laberinto a casillas vacías
+            this.monsters[i][j] = null;
+            this.players[i][j] = null;
+            this.labyrinth[i][j] = Labyrinth.EMPTY_CHAR;
+            }
+        }
 
-
-	this.labyrinth[exRow][exCol] = Labyrinth.EXIT_CHAR;
+        this.labyrinth[exitRow][exitCol] = Labyrinth.EXIT_CHAR;
     }
 
-    public Labyrinth() {
-	this (1,1,0,0);
-    }
 
     public boolean haveAWinner(){
 	return (this.players[exitRow][exitCol] != null);
@@ -65,7 +61,7 @@ public class Labyrinth {
     }
 
     public void addMonster(int row, int col, Monster monster){
-	if (PosOK(row, col) && emptyPos(row,col)) {
+	if (posOK(row, col) && emptyPos(row,col)) {
 	    // Guardo la referencia del mosntruo
 	    // en los atributos correspondientes
 	    this.monsters[row][col] = monster;
@@ -106,27 +102,27 @@ public class Labyrinth {
     }
 
     private boolean monsterPos(int row, int col){
-	return (this.labyrinth[row][col] == Labyrinth.MONSTER_CHAR);
+	return (this.labyrinth[row][col] == MONSTER_CHAR);
     }
 
     private boolean exitPos(int row, int col){
-	return (this.labyrinth[row][col] == Labyrinth.EXIT_CHAR);
+	return (this.labyrinth[row][col] == EXIT_CHAR);
     }
 
     private boolean combatPos(int row, int col){
-        return (this.labyrinth[row][col] == Labyrinth.COMBAT_CHAR);
+        return (this.labyrinth[row][col] == COMBAT_CHAR);
     }
 
     private boolean canStepOn(int row, int col){
-	boolean validPos = PosOK(row, col);
-	boolean empty = emptyPos(row, col);
-	boolean monsterPos = monsterPos(row, col);
-	boolean exit = exitPos(row, col);
+        boolean validPos = posOK(row, col);
+        boolean empty = emptyPos(row, col);
+        boolean monsterPos = monsterPos(row, col);
+        boolean exit = exitPos(row, col);
         return (validPos || empty || monsterPos || exit);
     }
 
     private void updateOldPos(int row, int col){
-	if (PosOK(row, col)) {
+	if (posOK(row, col)) {
 	    if (combatPos(row, col)) {
 		this.labyrinth[row][col] = Labyrinth.MONSTER_CHAR;
 	    } else {
@@ -145,8 +141,8 @@ public class Labyrinth {
 	    rCol = Dice.randomPos(this.nCols);
 	}
 
-	rPos[1] = rRow;
-	rPos[2] = rCol;
+	rPos[ROW] = rRow;
+	rPos[COL] = rCol;
 	return rPos;
     }
 
@@ -154,13 +150,13 @@ public class Labyrinth {
         int [] pos = {row,col};
         switch (direction){
             case LEFT: 
-                pos[1]--;  break;
+                pos[COL]--;  break;
             case RIGHT:
-                pos[1]++;  break;
+                pos[COL]++;  break;
             case UP:
-                pos[0]--;  break;
+                pos[ROW]--;  break;
             case DOWN:
-                pos[0]++;  break; 
+                pos[ROW]++;  break; 
         }
         return pos;
     }

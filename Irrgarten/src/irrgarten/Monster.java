@@ -5,7 +5,7 @@ package irrgarten;
  * @author Daniel Hidalgo Chica
  */
 public class Monster {
-    private static int INITIAL_HEALTH = 5;
+    private static final int INITIAL_HEALTH = 5;
     private String name;
     private float intelligence;
     private float strength;
@@ -18,18 +18,14 @@ public class Monster {
       * @param name Name of the mosnter
       * @param intelligence Intelligence of the mosnter
       * @param strength Strength of the monster 
-      * @param healt Health of the monster 
-      * @param row Row positioning fo the monster
-      * @param col Column positioning fo the monster
     */
 
-    public Monster(String name, float intelligence, float strength, float health, int row, int col) {
+    public Monster(String name, float intelligence, float strength) {
         this.name = name;
         this.intelligence = intelligence;
         this.strength = strength;
-        this.health = health;
-        this.row = row;
-        this.col = col; 
+        this.health = INITIAL_HEALTH;
+        resurrect();
     }
 
     public boolean dead() {

@@ -12,7 +12,7 @@ class TestP1
     # ENUM TYPES
     def self.test_enum
         puts "\n"
-        puts "ENUM_TEST"
+        puts "ENUM TEST"
         puts Irrgarten::Directions.constants
         puts Irrgarten::Orientation.constants
         puts Irrgarten::GameCharacter.constants
