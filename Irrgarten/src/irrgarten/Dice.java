@@ -59,6 +59,7 @@ public class Dice {
     public static int randomPos(int max){
         return generator.nextInt(max);
     }
+    
     /**
      * Returns the index of the player who will start the game
      * @param nPlayers number of current players in the game
@@ -85,11 +86,11 @@ public class Dice {
     }
     
     /**
-     * Determine if a player must be revived based on @param RESURRECT_PROB
-     * @return 1(true) if the player must be revived or 0 if not
+     * Determine if a player must be revived based on RESURRECT_PROB
+     * @return true if the player must be revived, false otherwise
      */
     public static boolean resurrectPlayer(){
-        return generator.nextFloat()<RESURRECT_PROB;
+        return generator.nextFloat() < RESURRECT_PROB;
     }
     
     /**
@@ -98,7 +99,7 @@ public class Dice {
      * is a number between [0,WEAPONS_REWARD]
      */
     public static int weaponsReward(){
-        return generator.nextInt(WEAPONS_REWARD+1);
+        return generator.nextInt(WEAPONS_REWARD + 1);
     }
     
     /**
@@ -107,31 +108,32 @@ public class Dice {
      * is a number between [0,SHIELDS_REWARD]
      */
     public static int shieldsReward(){
-        return generator.nextInt(SHIELDS_REWARD+1);
+        return generator.nextInt(SHIELDS_REWARD + 1);
     }
+    
     /**
      * Decide how many health points will the player earn when winning a combat
      * @return Number of health points given to the player when winning a combat. It
      * is a number between [0,HEALTH_REWARD]
      */
     public static int healthReward(){
-        return generator.nextInt(HEALTH_REWARD+1);
+        return generator.nextInt(HEALTH_REWARD + 1);
     }
     
     /**
      * Return a random weapon power
-     * @return A float number Weapon power between [0,MAX_ATTACK[
+     * @return A float number representing the weapon power between [0,MAX_ATTACK[
      */
     public static float weaponPower(){
-        return generator.nextFloat()*MAX_ATTACK;
+        return generator.nextFloat() * MAX_ATTACK;
     }
     
     /**
      * Return a random shield power
-     * @return A float number Shield power between [0,MAX_SHIELD[
+     * @return A float number representing the shield power between [0,MAX_SHIELD[
      */
     public static float shieldPower(){
-        return generator.nextFloat()*MAX_SHIELD;
+        return generator.nextFloat() * MAX_SHIELD;
     }
     
     /**
@@ -140,35 +142,32 @@ public class Dice {
      * between [0,MAX_USES]
      */
     public static int usesLeft(){
-        return generator.nextInt(MAX_USES+1);
+        return generator.nextInt(MAX_USES + 1);
     }
     
     /**
      * Generate a random number of competition applied
      * @param competence Max number of competence applied (exclusive)
-     * @return A floating point number that represents applied intensity by
+     * @return A floating point number that represents the applied intensity by
      * a weapon between [0,competence[ 
      */
     public static float intensity(float competence){
-        return generator.nextFloat()*competence;
+        return generator.nextFloat() * competence;
     }
     
     /**
      * Determine if a weapon must be discarded. It is easier for a weapon to 
-     * be discarded as the @param usesLeft parameter aproaches the constant
-     * MAX_USES, and if the uses 
+     * be discarded as the usesLeft parameter approaches the constant MAX_USES,
+     * and if the usesLeft is greater than 0.
      * @param usesLeft remaining uses of the element
      * @return true if a weapon must be discarded, false otherwise
      */
     public static boolean discardElement(int usesLeft){
-        
-        if (usesLeft ==MAX_USES) return false;
-        else {
-            float discardProbability = 1 - (usesLeft/MAX_USES);
-            return (generator.nextFloat()<= discardProbability);
+        if (usesLeft == MAX_USES) {
+            return false;
+        } else {
+            float discardProbability = 1 - ((float) usesLeft / MAX_USES);
+            return (generator.nextFloat() <= discardProbability);
         }  
     }
-    
-    
-    
 }
