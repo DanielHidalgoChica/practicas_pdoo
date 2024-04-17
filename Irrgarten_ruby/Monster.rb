@@ -33,8 +33,16 @@ module Irrgarten
         # Performs a defend action.
         #
         # @param receive_attack [Integer] The intensity of the attack received.
-        def defend(receive_attack)
-            # TODO: Implement the defend method logic.
+        def defend(received_attack)
+            is_dead = self.dead
+            if !is_dead
+                defensive_energy = Dice.intensity(@intelligence)
+                if defensive_energy < received_attack
+                    got_wounded
+                    is_dead = self.dead
+                end
+            end
+            is_dead
         end
 
         # Sets the position of the monster in the Irrgarten game.

@@ -50,8 +50,17 @@ public class Monster {
      * @param receiveAttack the attack intensity received
      * @return true if the monster successfully defended, false otherwise
      */
-    boolean defend(float receiveAttack) {
-        throw new UnsupportedOperationException();
+    boolean defend(float receivedAttack) {
+        boolean isDead = this.dead();
+        if(!isDead){
+            float defensiveEnergy = Dice.intensity(intelligence);
+            if(defensiveEnergy < receivedAttack){
+                gotWounded();
+                isDead=this.dead();
+            }
+                
+        }
+        return isDead;
     }
     
     /**

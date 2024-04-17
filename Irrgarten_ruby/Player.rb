@@ -50,7 +50,13 @@ module Irrgarten
         # @param direction [Symbol] The direction to move.
         # @param valid_moves [Array<Symbol>] The valid moves for the player.
         def move(direction, valid_moves)
-            # Implementation goes here
+            size = valid_moves.size
+            contained = valid_moves.include?(direction)
+            if (size > 0 && !contained)
+                valid_moves[0]
+            else
+                direction
+            end
         end
 
         # Calculates the player's attack power.
@@ -64,12 +70,23 @@ module Irrgarten
         #
         # @param received_attack [Integer] The attack power received.
         def defend(received_attack)
-            # Implementation goes here
+            manage_hit(received_attack)
         end
 
         # Receives a reward.
         def receive_reward
-            # Implementation goes here
+            w_reward = Dice.weapons_reward
+            s_reward = Dice.shields_reward
+            w_reward.times do
+                wnew = new_weapon
+                receive_weapon(wnew)
+            end
+            s_reward.times do
+                snew = new_shield
+                receive_shield(snew)
+            end
+            extra_health =Dice.health_reward
+            @health += extra_health
         end
 
         # Returns a string representation of the player's state.
@@ -77,13 +94,13 @@ module Irrgarten
         # @return [String] The player's state.
         def to_s
             ret = "\nPlayer State" +
-                        "\nName:" + @name +
-                        "\nIntelligence:" + @intelligence.to_s +
-                        "\nStrength:" + @strength.to_s +
-                        "\nHealth:" + @health.to_s +
+                        "\nName: " + @name +
+                        "\nIntelligence: " + @intelligence.to_s +
+                        "\nStrength: " + @strength.to_s +
+                        "\nHealth: " + @health.to_s +
                         "\nPosition: (" + @row.to_s + "," + @col.to_s + ")" +
                         "\nConsecutive Hits: " + @consecutive_hits.to_s +
-                        "\nWeapons:"
+                        "\nWeapons: "
             @weapons.each { |a_weapon| ret += "\n\t" + a_weapon.to_s }
             ret += "\nShields:"
             @shields.each { |a_shield| ret += "\n\t" + a_shield.to_s }
@@ -96,14 +113,22 @@ module Irrgarten
         #
         # @param w [Weapon] The weapon to receive.
         def receive_weapon(w)
-            # Implementation goes here
+            @weapons.delete_if { |wi| wi.discard }
+            size = @weapons.size
+            if size < @@MAX_WEAPONS
+                @weapons << w
+            end
         end
 
         # Receives a shield.
         #
         # @param s [Shield] The shield to receive.
         def receive_shield(s)
-            # Implementation goes here
+            @shields.delete_if { |si| si.discard }
+            size = @shields.size
+            if size < @@MAX_SHIELDS
+                @shields << s
+            end
         end
 
         # Creates a new weapon.
@@ -155,7 +180,20 @@ module Irrgarten
         #
         # @param received_attack [Integer] The attack power received.
         def manage_hit(received_attack)
-            # Implementation goes here
+            defense = defensive_energy
+            if defense < received_attack
+                got_wounded
+                inc_consecutive_hits
+            else
+                reset_hits
+            end
+            if @consecutive_hits == @@HITS2LOSE || self.dead
+                reset_hits
+                lose = true
+            else
+                lose = false
+            end
+            lose
         end
 
         # Resets the consecutive hits counter.

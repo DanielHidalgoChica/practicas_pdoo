@@ -26,7 +26,32 @@ module Irrgarten
         # Performs the next step in the game.
         # @param preferred_direction [Symbol] The preferred direction to move.
         def next_step(preferred_direction)
-            # TODO: Implement next_step method
+            @log=""
+            dead=@current_player.dead
+            if !dead
+                direction = actual_direction(preferred_direction)
+                if direction != preferred_direction
+                    log_player_no_orders
+                end
+
+                monster = @labyrinth.put_player(direction, @current_player)
+
+                if monster.nil?
+                    log_no_monster
+                else
+                    winner=combat(monster)
+                    manage_reward(winner)
+                end
+            else
+                manage_resurrection
+            end
+
+            end_game=finished
+            if !end_game
+                next_player
+            end
+
+            end_game
         end
 
         # Gets the current state of the game.
@@ -54,16 +79,34 @@ module Irrgarten
             n_rows = 5
             n_cols = 5
             exit_row = 1
-            exit_col = 0
+            exit_col = 1
             @labyrinth = Labyrinth.new(n_rows, n_cols, exit_row, exit_col)
-            monster = Monster.new("Goblin", Dice.random_intelligence, Dice.random_strength)
-            @labyrinth.add_monster(2, 2, monster)
-            @monsters << monster
+
+            @labyrinth.add_block(Orientation::HORIZONTAL, 0, 0, 2)
+            @labyrinth.add_block(Orientation::VERTICAL, 0, 1, 2)
+
+            goblin = Monster.new("Goblin", Dice.random_intelligence, Dice.random_strength)
+            @labyrinth.add_monster(2, 2, goblin)
+            @monsters << goblin
+
+            piglin = Monster.new("Piglin", Dice.random_intelligence, Dice.random_strength)
+            @labyrinth.add_monster(4, 4, piglin)
+            @monsters << piglin
+
+            zombie = Monster.new("Zombie", Dice.random_intelligence, Dice.random_strength)
+            @labyrinth.add_monster(4, 0, zombie)
+            @monsters << zombie
+
+            skeleton = Monster.new("Skeleton", Dice.random_intelligence, Dice.random_strength)
+            @labyrinth.add_monster(0, 4, skeleton)
+            @monsters << skeleton
+
+            @labyrinth.spread_players(@players)
         end
 
         # Moves to the next player in the game.
         def next_player
-            if (@current_player_index == players.length - 1)
+            if (@current_player_index == @players.length - 1)
                 @current_player_index = 0
             else
                 @current_player_index = @current_player_index + 1
@@ -76,29 +119,60 @@ module Irrgarten
         # @param preferred_direction [Symbol] The preferred direction to move.
         # @return [Symbol] The actual direction to move.
         def actual_direction(preferred_direction)
-            # TODO: Implement actual_direction method
+            current_row=@current_player.row
+            current_col=@current_player.col
+            valid_moves = @labyrinth.valid_moves(current_row, current_col)
+            @current_player.move(preferred_direction, valid_moves)
         end
 
         # Performs combat with a monster.
         # @param monster [Monster] The monster to combat with.
         def combat(monster)
-            # TODO: Implement combat method
+            rounds=0
+            winner = GameCharacter::PLAYER
+            player_attack= @current_player.attack
+            lose = monster.defend(player_attack)
+            while !lose && rounds < @@MAX_ROUNDS
+                winner = GameCharacter::MONSTER
+                rounds=rounds+1
+                monster_attack=monster.attack
+                lose = @current_player.defend(monster_attack)
+                if !lose
+                    player_attack = @current_player.attack
+                    winner = GameCharacter::PLAYER
+                    lose = monster.defend(player_attack)
+                end
+
+            end
+            log_rounds(rounds, @@MAX_ROUNDS)
+            winner
         end
 
         # Manages the reward for the winner of the game.
         # @param winner [Boolean] True if the player has won, false if the monster has won.
         def manage_reward(winner)
-            # TODO: Implement manage_reward method
+            if winner==GameCharacter::PLAYER
+                @current_player.receive_reward
+                log_player_won
+            else
+                log_monster_won
+            end
         end
 
         # Manages the resurrection of a player.
         def manage_resurrection
-            # TODO: Implement manage_resurrection method
+            resurrect = Dice.resurrect_player
+            if resurrect
+                @current_player.resurrect
+                log_resurrected
+            else
+                log_player_skip_turn
+            end
         end
 
         # Logs that the current player has won the game.
         def log_player_won
-            @log += "Player number " + @current_player.number + " has won. \n"
+            @log += "Player number " + @current_player.number.to_s + " has won. \n"
         end
 
         # Logs that the monster has won the game.
@@ -108,24 +182,24 @@ module Irrgarten
 
         # Logs that the current player has been resurrected.
         def log_resurrected
-            @log += "The player " + @current_player.number + " has resurrected.\n"
+            @log += "The player " + @current_player.number.to_s + " has resurrected.\n"
         end
 
         # Logs that the current player has skipped a turn because they were dead.
         def log_player_skip_turn
-            @log += "Player number " + @current_player.number + " has lost the turn " +
+            @log += "Player number " + @current_player.number.to_s + " has lost the turn " +
                 "because they were dead. \n"
         end
 
         # Logs that the current player couldn't follow the instructions from the human player.
-        def log_players_no_orders
-            @log += "Player number " + @current_player.number + " couldn't follow " +
+        def log_player_no_orders
+            @log += "Player number " + @current_player.number.to_s + " couldn't follow " +
                 "the instructions from the human player. \n"
         end
 
         # Logs that the current player couldn't move or moved to an empty box.
         def log_no_monster
-            @log += "Player number " + @current_player.number + " couldn't move or " +
+            @log += "Player number " + @current_player.number.to_s + " couldn't move or " +
                 "moved to an empty box. \n"
         end
 

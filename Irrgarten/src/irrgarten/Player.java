@@ -99,7 +99,14 @@ public class Player {
      * @return The direction the player moved to.
      */
     public Directions move(Directions direction, ArrayList<Directions> validMoves) {
-        throw new UnsupportedOperationException();
+        int size = validMoves.size();
+        boolean contained = validMoves.contains(direction);
+        if(size > 0  && !contained){
+            Directions firstElement = validMoves.get(0);
+            return firstElement;
+        }
+        else
+            return direction;
     }
 
     /**
@@ -116,14 +123,28 @@ public class Player {
      * @return true if the player successfully defended, false otherwise.
      */
     public boolean defend(float receivedAttack){
-        throw new UnsupportedOperationException();
+        boolean lose = manageHit(receivedAttack);
+        return lose;
     }
     
     /**
      * Receives a reward.
      */
     public void receiveReward(){	
-        throw new UnsupportedOperationException();
+        int wReward = Dice.weaponsReward();
+        int sReward = Dice.shieldsReward();
+        for (int i= 0; i < wReward; i++){
+            Weapon wnew = newWeapon();
+            receiveWeapon(wnew);
+        }
+        
+        for (int i= 0; i < sReward; i++){
+            Shield snew = newShield();
+            receiveShield(snew);
+        }
+        
+        int extraHealth = Dice.healthReward();
+        health+=extraHealth;
     }
     
     /**
@@ -132,18 +153,18 @@ public class Player {
      */
     public String toString(){
         String ret = "\nPlayer State"
-                    + "\nName:" + this.name
-                    + "\nIntelligence:" + Float.toString(intelligence)
-                    + "\nStrength:"+ Float.toString(strength)
-                    + "\nHealth:"+  Float.toString(health)
-                    + "\nPosition: (" + Integer.toString(row) + "," + Integer.toString(col) + ")"
-                    + "\nConsecutive Hits:"+  Integer.toString(this.consecutiveHits)
-                    + "\nWeapons:";
+                    + "\n" + this.name
+                    + "\nIntelligence: " + Float.toString(intelligence)
+                    + " Strength: "+ Float.toString(strength)
+                    + "\nHealth: "+  Float.toString(health)
+                    + "\nPos:(" + Integer.toString(row) + "," + Integer.toString(col) + ")"
+                    + "\nConsecutive Hits: "+  Integer.toString(this.consecutiveHits)
+                    + "\nWeapons: ";
 	    // Muestro las armas
 	    for (Weapon aWeapon : this.weapons) {
 	        ret +=  "\n\t" + aWeapon.toString();
 	    }
-	    ret += "\nShields:";
+	    ret += "\nShields: ";
 	    for (Shield aShield : this.shields) {
 	        ret += "\n\t" + aShield.toString();
 	    }
@@ -152,11 +173,20 @@ public class Player {
     }
     
     private void receiveWeapon(Weapon w){
-        throw new UnsupportedOperationException();
+        
+        weapons.removeIf(wi -> wi.discard());
+        int size = weapons.size();
+        if(size < MAX_WEAPONS)
+            weapons.add(w);
     }
 
     private void receiveShield(Shield s){
-        throw new UnsupportedOperationException();
+        
+        shields.removeIf(si -> si.discard());
+        int size = shields.size();
+        if(size < MAX_SHIELDS)
+            shields.add(s);
+
     }
     
     /**
@@ -213,8 +243,24 @@ public class Player {
         return this.sumShields() + this.intelligence;
     }
 
-    private void manageHit(float receivedAttack){
-        throw new UnsupportedOperationException();
+    private boolean manageHit(float receivedAttack){
+        float defense = defensiveEnergy();
+        if(defense < receivedAttack){
+            gotWounded();
+            incConsecutiveHits();
+        }
+        else
+            resetHits();
+        
+        boolean lose;
+        if( (consecutiveHits == HITS2LOSE) || dead()){
+            resetHits();
+            lose = true;
+        }
+        else
+            lose = false;
+        
+        return lose;
     }
     
     /**

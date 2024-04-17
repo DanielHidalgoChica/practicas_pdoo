@@ -5,6 +5,8 @@ require_relative "Player.rb"
 require_relative "Labyrinth.rb"
 require_relative "Game.rb"
 require_relative "GameState.rb"
+require_relative "Orientation.rb"
+
 class TestP2
     def self.test_monster
         monster = Irrgarten::Monster.new("Piglin", Irrgarten::Dice.random_intelligence, Irrgarten::Dice.random_strength)
@@ -20,6 +22,7 @@ class TestP2
         player = Irrgarten::Player.new('1', 9.0, 4)
         puts player.to_s
         player.set_pos(1, 1)
+        puts "Fila del jugador: #{player.row}"
         puts "Attack:"
         puts player.attack
 
