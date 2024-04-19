@@ -1,15 +1,18 @@
-
 package irrgarten;
 
 /**
- * Represents a shield from the Irrgarten game
- * @author luisvaldivieso
- */
-/**
- * The Shield class represents a shield that offers protection and has a limited number of uses.
+ * Represents a shield in the game Irrgarten
+ * @author Daniel Hidalgo Chica and Luis Esteban Valdivieso
  */
 public class Shield {
+    /**
+     * The protection that the shield offers.
+     */
     private float protection;
+
+    /**
+     * The number of uses left for the shield.
+     */
     private int uses;
     
     /**

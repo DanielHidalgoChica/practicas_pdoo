@@ -2,7 +2,14 @@
 module Irrgarten
 
 class GameState
-    # Parameterized constructor for the class
+    # Initializes a new GameState instance.
+    # @param labyrinth [Labyrinth] the labyrinth
+    # @param players [Array<Player>] the players
+    # @param monsters [Array<Monster>] the monsters
+    # @param current_player [Player] the current player
+    # @param winner [Player] the winner
+    # @param log [String] the log
+    # @return [GameState] the GameState instance
     def initialize (labyrinth, players,monsters,current_player,winner,log)
         @labyrinth = labyrinth
         @players = players
@@ -13,7 +20,7 @@ class GameState
     end 
 
     # Create readers for each instance atribute
-    attr_reader :labyrinth,:players,:monsters,:current_player,:winner,:log
-end 
+    attr_reader :labyrinth, :players, :monsters, :current_player, :winner, :log
+end
 
 end

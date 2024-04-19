@@ -42,10 +42,12 @@ public class Game {
     }
 
     /**
-     * Makes the next step in the game with the specified preferred direction.
-     *
-     * @param preferredDirection The preferred direction to move in.
-     * @return true if the step was successful, false otherwise.
+     * Advances the game one step.
+     * The player moves in the preferred direction and fights the monster in the new position.
+     * If the player dies, it may resurrect.
+     * If the game has finished, it advances to the next player.
+     * @param preferredDirection The preferred direction of the player.
+     * @return true if the game has finished, false otherwise.
      */
     public boolean nextStep(Directions preferredDirection) {
         this.log = ""; // Clear the log of the game because of a new step
@@ -94,6 +96,9 @@ public class Game {
         return state;
     }
 
+    /**
+     * Configures the labyrinth with the specified parameters.
+     */
     private void configureLabyrinth(){
         int nRows = 5, nCols = 5;
         int exitRow = 1, exitCol = 1;
@@ -118,6 +123,9 @@ public class Game {
         labyrinth.spreadPlayers(players);
     }
 
+    /**
+     * Advances the game to the next player.
+     */
     private void nextPlayer(){
         int nPlayers = players.size();
         if (currentPlayerIndex == nPlayers-1){
@@ -129,6 +137,12 @@ public class Game {
         currentPlayer = this.players.get(currentPlayerIndex);
     }
 
+    /**
+     * Returns the actual direction of the player.
+     * If the preferred direction is not valid, it returns the first valid direction.
+     * @param preferredDirection The preferred direction of the player.
+     * @return The actual direction of the player.
+     */
     private Directions actualDirection(Directions preferredDirection) {
         int currentRow = currentPlayer.getRow();
         int currentCol = currentPlayer.getCol();
@@ -137,6 +151,12 @@ public class Game {
         return output;
     }
 
+    /**
+     * Simulates a combat between the player and the monster.
+     * The combat ends when one of the characters dies or the maximum number of rounds is reached.
+     * @param monster The monster to fight.
+     * @return The winner of the combat.
+     */
     private GameCharacter combat(Monster monster){
         int rounds = 0;
         GameCharacter winner = GameCharacter.PLAYER;
@@ -159,6 +179,12 @@ public class Game {
         return winner;
     }
 
+    /**
+     * Manages the reward of the combat.
+     * If the player wins, it receives a reward.
+     * @param winner The winner of the combat.
+     * @return The winner of the combat.
+     */
     private void manageReward(GameCharacter winner) {
         if (winner == GameCharacter.PLAYER){
             currentPlayer.receiveReward();
@@ -168,6 +194,11 @@ public class Game {
             this.logMonsterWon();
     }
 
+    /**
+     * Manages the resurrection of the player.
+     * If the player doesn't resurrect, it loses the turn.
+     * @return The winner of the combat.
+     */
     private void manageResurrection() {
         boolean resurrect = Dice.resurrectPlayer();
         if (resurrect){
@@ -179,31 +210,52 @@ public class Game {
             this.logPlayerSkipTurn();
     }
 
+    /**
+     * Logs the player's victory.
+     */
     private void logPlayerWon(){
         log += "Player number " + currentPlayer.getNumber() + " has won. \n";
     }
 
+    /**
+     * Logs the monster's victory.
+     */
     private void logMonsterWon(){
         log += "The monster has won\n";
     }
     
+    /**
+     * Logs the resurrection of the player.
+     */
     private void logResurrected(){
         log += "The player" + currentPlayer.getNumber() + " has resurrected.\n";
     }
     
+    /**
+     * Logs the player's turn skip.
+     */
     private void logPlayerSkipTurn(){
         log += "Player number " + currentPlayer.getNumber() + " has lost the turn"
           + " because he was dead. \n";
     }
     
+    /**
+     * Logs the player's turn skip.
+     */
     private void logPlayerNoOrders(){
         log += "Player number " + currentPlayer.getNumber() + " couldn't follow the instructions from the human player.\n"; 
     }
     
+    /**
+     * Logs the player's turn skip.
+     */
     private void logNoMonster(){
         log += "Player number " + currentPlayer.getNumber() + " couldn't move or moved to an empty box.\n";
     }
     
+    /**
+     * Logs the number of rounds passed.
+     */
     private void logRounds(int rounds, int max){
         log += "Rounds passed: " + rounds + " / " + max + "\n"; 
     }

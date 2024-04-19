@@ -5,20 +5,68 @@ import java.util.ArrayList;
  * The Player class represents a player in the game.
  */
 public class Player {
+    // Constants
+
+    /*
+    * The maximum number of weapons a player can have.
+    */
     public static final int MAX_WEAPONS = 2;
+
+    /**
+     * The maximum number of shields a player can have.
+     */
     public static final int MAX_SHIELDS = 3;
+
+    /**
+     * The initial health of the player.
+     */
     public static final int INITIAL_HEALTH = 10;
+
+    /**
+     * The number of consecutive hits a player can receive before losing.
+     */
     public static final int HITS2LOSE = 3;
     
+    // Attributes
+    /**
+     * The player's name.
+     */
     private String name;
+
+    /**
+     * The player number.
+     */
     private char number;
+
+    /**
+     * The player's intelligence level.
+     */
     private float intelligence;
+
+    /**
+     * The player's strength level.
+     */
     private float strength;
+
+    /**
+     * The player's health.
+     */
     private float health;
+
+    /**
+     * The player's position.
+     */
     private int row;
     private int col;
-    private int consecutiveHits = 0;
 
+    /**
+     * The number of consecutive hits the player has received.
+     */
+    private int consecutiveHits;
+
+    /**
+     * The player's weapons and shields.
+     */
     private ArrayList<Weapon> weapons;
     private ArrayList<Shield> shields;
 
@@ -128,7 +176,10 @@ public class Player {
     }
     
     /**
-     * Receives a reward.
+     * Receives a reward for defeating a monster.
+     * The reward consists of new weapons, shields, and health.
+     * The number of weapons and shields and the health reward received is determined by the dice.
+     * 
      */
     public void receiveReward(){	
         int wReward = Dice.weaponsReward();
@@ -172,6 +223,10 @@ public class Player {
         return ret;
     }
     
+    /**
+     * Receives a weapon.
+     * @param w The weapon to receive.
+     */
     private void receiveWeapon(Weapon w){
         
         weapons.removeIf(wi -> wi.discard());
@@ -180,6 +235,10 @@ public class Player {
             weapons.add(w);
     }
 
+    /**
+     * Receives a shield.
+     * @param s The shield to receive.
+     */
     private void receiveShield(Shield s){
         
         shields.removeIf(si -> si.discard());
@@ -243,6 +302,11 @@ public class Player {
         return this.sumShields() + this.intelligence;
     }
 
+    /**
+     * Manages the hit received by the player.
+     * @param receivedAttack The attack power received.
+     * @return true if the player lost, false otherwise.
+     */
     private boolean manageHit(float receivedAttack){
         float defense = defensiveEnergy();
         if(defense < receivedAttack){

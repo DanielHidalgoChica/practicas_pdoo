@@ -26,17 +26,8 @@
 #
 #   # Check if a player should be resurrected
 #   should_resurrect = Irrgarten::Dice.resurrect_player
-#
-#   # Calculate the number of weapons received as a reward
-#   weapons = Irrgarten::Dice.weapons_reward
-#
-#   # Calculate the power of a weapon
-#   weapon_power = Irrgarten::Dice.weapon_power
-#
-#   # Check if an element should be discarded based on its uses left
-#   should_discard = Irrgarten::Dice.discard_element(3)
-#
 #   ...
+#
 module Irrgarten
 
 class Dice
@@ -75,7 +66,7 @@ class Dice
     @generator = Random.new
 
     # Return a random column or row between [0,max[
-    def self.random_pos (max)
+    def self.random_pos(max)
         @generator.rand(max)
     end
 
@@ -143,12 +134,8 @@ class Dice
     # Decides if the element must be discarded. The probability of this 
     # event will be greater as uses_left approaches MAX_USES
     def self.discard_element(uses_left)
-        if (uses_left == @@MAX_USES) 
-            return false
-        else
-            bound = 1 - (uses_left/@@MAX_USES)
-            (@generator.rand(1.0)<=bound)
-        end
+        discard_probability = 1 - (uses_left / @@MAX_USES)
+        @generator.rand < discard_probability
     end
 end
 

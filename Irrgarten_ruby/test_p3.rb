@@ -19,7 +19,7 @@ class TestP3
             generated_direction = directions[rand(4)]
 
 
-            game_state = game.get_game_state
+            game_state = game.game_state
             puts game_state.labyrinth.to_s
             puts "Current Player: #{game_state.current_player}"
             puts "Chosen direction: #{generated_direction}"

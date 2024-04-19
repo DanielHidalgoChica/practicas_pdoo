@@ -5,7 +5,7 @@ import irrgarten.UI.TextUI;
 
 /**
  *
- * @author luisvaldivieso
+ * @author Daniel Hidalgo Chica and Luis Esteban Valdivieso
  */
 public class GamePlay {
     static final int N_PLAYERS=4;

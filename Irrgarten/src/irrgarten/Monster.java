@@ -2,11 +2,9 @@ package irrgarten;
 
 /**
  * Represents a monster in the game
- * @author Daniel Hidalgo Chica
+ * @author Daniel Hidalgo Chica and Luis Esteban Valdivieso
  */
-/**
- * Represents a monster in the game.
- */
+
 public class Monster {
     private static final int INITIAL_HEALTH = 5;
     private String name;
@@ -27,6 +25,7 @@ public class Monster {
         this.intelligence = intelligence;
         this.strength = strength;
         this.health = INITIAL_HEALTH;
+        setPos(-1,-1);
     }
     
     /**

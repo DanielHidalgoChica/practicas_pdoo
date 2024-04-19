@@ -1,12 +1,26 @@
+#encoding:utf-8
 module Irrgarten
     # The Labyrinth class represents a maze game.
     class Labyrinth
+        # The character used to represent a block in the labyrinth.
         @@BLOCK_CHAR = 'X'
+
+        # The character used to represent an empty space in the labyrinth.
         @@EMPTY_CHAR = '-'
+
+        # The character used to represent a monster in the labyrinth.
         @@MONSTER_CHAR = 'M'
+
+        # The character used to represent a combat position in the labyrinth.
         @@COMBAT_CHAR = 'C'
+
+        # The character used to represent the exit in the labyrinth.
         @@EXIT_CHAR = 'E'
+
+        # The row index in a position array.
         @@ROW = 0
+
+        # The column index in a position array.
         @@COL = 1
 
         # Initializes a new Labyrinth instance.
@@ -51,7 +65,7 @@ module Irrgarten
             @labyrinth.each do |row|
                 string << "|"
                 row.each do |box|
-                    string << "#{box} |"
+                    string << "#{box}|"
                 end
                 string << "\n"
             end
@@ -91,29 +105,28 @@ module Irrgarten
         # @param length [Integer] the length of the block
         def add_block(orientation, start_row, start_col, length)
             if orientation == Orientation::VERTICAL
-                inc_row=1
-                inc_col=0
+                inc_row = 1
+                inc_col = 0
             else
-                inc_row=0
-                inc_col=1
+                inc_row = 0
+                inc_col = 1
             end
 
             row=start_row
             col=start_col
 
-            while pos_OK(row,col) && empty_pos(row,col) && length > 0
+            while pos_OK(row, col) && empty_pos(row, col) && length.positive?
                 @labyrinth[row][col] = @@BLOCK_CHAR
-                length=length - 1
+                length -= 1
                 row += inc_row
-                col+= inc_col
+                col += inc_col
             end
         end
 
         # Returns the valid moves from the specified position.
-        #
         # @param row [Integer] the row index of the position
         # @param col [Integer] the column index of the position
-        # @return [Array<Symbol>] the valid moves from the position
+        # @return [Array<Directions>] the valid moves from the position
         def valid_moves(row, col)
             output = Array.new(0)
             if can_step_on(row+1, col)
@@ -184,14 +197,10 @@ module Irrgarten
         # @param col [Integer] the column index of the position
         # @return [Boolean] true if the position can be stepped on, false otherwise
         def can_step_on(row, col)
-            valid_pos=pos_OK(row,col)
-            can_step = false
+            valid_pos = pos_OK(row,col)
+            can_step = valid_pos
             if valid_pos
-                empty=empty_pos(row,col)
-                monster_pos=monster_pos(row,col)
-                exit=exit_pos(row,col)
-                can_step = empty || monster_pos || exit
-
+                can_step = empty_pos(row, col) || monster_pos(row, col) || exit_pos(row, col)
             end
             can_step
         end
@@ -246,6 +255,13 @@ module Irrgarten
             [r_row, r_col]
         end
 
+        # Puts a player in the labyrinth at the specified position.
+        # @param old_row [Integer] the row index of the player's old position
+        # @param old_col [Integer] the column index of the player's old position
+        # @param row [Integer] the row index of the player's new position
+        # @param col [Integer] the column index of the player's new position
+        # @param player [Player] the player to put
+        # @return [Monster] the monster in the new position, or nil if there is no monster
         def put_player_2D (old_row, old_col, row, col, player)
             output = nil
             if can_step_on(row, col)

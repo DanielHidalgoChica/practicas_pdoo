@@ -159,7 +159,7 @@ public class Labyrinth {
      * Determines valid moves from the given position.
      * @param row The row index of the position.
      * @param col The column index of the position.
-     * @return List of valid moves from the given position.
+     * @return A list of valid moves from the position.
      */
     public ArrayList<Directions> validMoves(int row, int col) {
         ArrayList<Directions> output = new ArrayList(0);
@@ -303,9 +303,13 @@ public class Labyrinth {
     }
 
     /**
-     * Placeholder method for placing a player in the labyrinth in 2D.
-     * @return The monster encountered, if any, while putting the player.
-     * @throws UnsupportedOperationException if the method is not implemented.
+     * Moves a player to the specified position in the labyrinth.
+     * @param oldRow The row index of the player's old position.
+     * @param oldCol The column index of the player's old position.
+     * @param row The row index of the player's new position.
+     * @param col The column index of the player's new position.
+     * @param player The player to be moved.
+     * @return The monster encountered, if any, while moving the player.
      */
     private Monster putPlayer2D (int oldRow, int oldCol, int row, int col, Player player){
         Monster output = null;
