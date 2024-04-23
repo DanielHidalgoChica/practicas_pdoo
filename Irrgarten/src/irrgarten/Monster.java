@@ -2,11 +2,9 @@ package irrgarten;
 
 /**
  * Represents a monster in the game
- * @author Daniel Hidalgo Chica
+ * @author Daniel Hidalgo Chica and Luis Esteban Valdivieso
  */
-/**
- * Represents a monster in the game.
- */
+
 public class Monster {
     private static final int INITIAL_HEALTH = 5;
     private String name;
@@ -27,6 +25,7 @@ public class Monster {
         this.intelligence = intelligence;
         this.strength = strength;
         this.health = INITIAL_HEALTH;
+        setPos(-1,-1);
     }
     
     /**
@@ -50,8 +49,17 @@ public class Monster {
      * @param receiveAttack the attack intensity received
      * @return true if the monster successfully defended, false otherwise
      */
-    boolean defend(float receiveAttack) {
-        throw new UnsupportedOperationException();
+    boolean defend(float receivedAttack) {
+        boolean isDead = this.dead();
+        if(!isDead){
+            float defensiveEnergy = Dice.intensity(this.intelligence);
+            if(defensiveEnergy < receivedAttack){
+                this.gotWounded();
+                isDead=this.dead();
+            }
+                
+        }
+        return isDead;
     }
     
     /**
@@ -69,12 +77,11 @@ public class Monster {
      * @return a string representation of the monster
      */
     public String toString(){
-        String ret = "\nMonster State"
-                    + "\nName:" + this.name
-                    + "\nIntelligence:" + Float.toString(intelligence)
-                    + "\nStrength:"+ Float.toString(strength)
-                    + "\nHealth:"+  Float.toString(health)
-                    + "\nPosition: (" + Integer.toString(row) + "," + Integer.toString(col) + ")\n";
+        String ret ="M[" + this.name
+                    + ",Intelligence:" + Float.toString(intelligence)
+                    + ", Strength:"+ Float.toString(strength)
+                    + ", Health:"+  Float.toString(health)
+                    + ", Pos(" + Integer.toString(row) + "," + Integer.toString(col) + ")]\n";
         return ret;
     }
 

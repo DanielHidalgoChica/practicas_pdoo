@@ -26,17 +26,8 @@
 #
 #   # Check if a player should be resurrected
 #   should_resurrect = Irrgarten::Dice.resurrect_player
-#
-#   # Calculate the number of weapons received as a reward
-#   weapons = Irrgarten::Dice.weapons_reward
-#
-#   # Calculate the power of a weapon
-#   weapon_power = Irrgarten::Dice.weapon_power
-#
-#   # Check if an element should be discarded based on its uses left
-#   should_discard = Irrgarten::Dice.discard_element(3)
-#
 #   ...
+#
 module Irrgarten
 
 class Dice
@@ -74,52 +65,52 @@ class Dice
     # generation of random numbers
     @generator = Random.new
 
-    # Return a random column or row between [0,max[
-    def self.random_pos (max)
+    # @return a random column or row between [0,max[
+    def self.random_pos(max)
         @generator.rand(max)
     end
 
-    # Return the index of the player who will start the game, between
+    # @return the index of the player who will start the game, between
     # [0,n_players[
     def self.who_starts(n_players)
         @generator.rand(n_players)
     end
 
-    # Return a value for intelligence between [0,MAX_INTELLIGENCE[
+    # @return a value for intelligence between [0,MAX_INTELLIGENCE[
     def self.random_intelligence
         @generator.rand(@@MAX_INTELLIGENCE)
     end
 
-    # Return a random value of strength between [0,MAX_STRENGTH[
+    # @return a random value of strength between [0,MAX_STRENGTH[
     def self.random_strength
         @generator.rand(@@MAX_STRENGTH)
     end
 
-    # Returns a boolean representing if the player must be revived.
+    # @return a boolean representing if the player must be revived.
     # True if the player must be revived or false otherwise.
     def self.resurrect_player 
         (@generator.rand(1.0)<@@RESURRECT_PROB)
     end
 
-    # Return the number of weapons the player should receive when winning
+    # @return the number of weapons the player should receive when winning
     # a combat, a integer between [0,WEAPONS_REWARD]
     def self.weapons_reward 
         @generator.rand(@@WEAPONS_REWARD+1)
     end 
 
-    # Return the number of shields the player should receive when winning
+    # @return the number of shields the player should receive when winning
     # a combat, a integer between [0,SHIELDS_REWARD]
     def self.shields_reward 
         @generator.rand(@@SHIELDS_REWARD+1)
     end  
 
-    # Return the number of health points the player should receive when winning
+    # @return the number of health points the player should receive when winning
     # a combat, a integer between [0,HEALTH_REWARD]
     def self.health_reward 
         @generator.rand(@@HEALTH_REWARD+1)
     end  
 
-    # Return a random value between [0, MAX_ATTACK[
+    # @return a random value between [0, MAX_ATTACK[
     def self.weapon_power
         @generator.rand(@@MAX_ATTACK)
     end
@@ -143,12 +134,8 @@ class Dice
     # Decides if the element must be discarded. The probability of this 
     # event will be greater as uses_left approaches MAX_USES
     def self.discard_element(uses_left)
-        if (uses_left == @@MAX_USES) 
-            return false
-        else
-            bound = 1 - (uses_left/@@MAX_USES)
-            (@generator.rand(1.0)<=bound)
-        end
+        discard_probability = 1 - (uses_left / @@MAX_USES)
+        @generator.rand < discard_probability
     end
 end
 

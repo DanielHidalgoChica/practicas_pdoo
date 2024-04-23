@@ -14,6 +14,8 @@ module Irrgarten
             @intelligence = intelligence
             @strength = strength
             @health = @@INITIAL_HEALTH
+            @row = nil
+            @col = nil
         end
 
         # Checks if the monster is dead.
@@ -30,11 +32,24 @@ module Irrgarten
             Dice.intensity(@strength)
         end
 
-        # Performs a defend action.
-        #
-        # @param receive_attack [Integer] The intensity of the attack received.
-        def defend(receive_attack)
-            # TODO: Implement the defend method logic.
+        # Defends against an attack.
+        # If the monster is dead, it will not defend.
+        # If the defensive energy is less than the received attack, the monster will get wounded.
+        # If the monster is dead after the attack, it will return true.
+        # Otherwise, it will return false.
+        # @param received_attack [Integer] The attack received by the monster.
+        # @return [Boolean] Returns true if the monster is dead after the attack, false otherwise.
+        # @see Dice#intensity
+        def defend(received_attack)
+            is_dead = self.dead
+            if !is_dead
+                defensive_energy = Dice.intensity(@intelligence)
+                if defensive_energy < received_attack
+                    self.got_wounded
+                    is_dead = self.dead
+                end
+            end
+            is_dead
         end
 
         # Sets the position of the monster in the Irrgarten game.
@@ -44,18 +59,18 @@ module Irrgarten
         def set_pos(row, col)
             @row = row
             @col = col
+            nil # Return nil to protect the class
         end
 
         # Returns a string representation of the monster's state.
         #
         # @return [String] Returns a string containing the monster's name, intelligence, strength, health, and position.
         def to_s
-            ret = "\nMonster State" +
-                        "\nName: #{@name}" +
-                        "\nIntelligence: #{@intelligence}" +
-                        "\nStrength: #{@strength}" +
-                        "\nHealth: #{@health}" +
-                        "\nPosition: (#{@row}, #{@col})\n"
+            ret ="M[" + "#{@name}" +
+                    ", Intelligence: #{@intelligence}" +
+                    ", Strength: #{@strength}" +
+                    ", Health: #{@health}" +
+                    ", Pos(#{@row}, #{@col})]\n"
             ret
         end
 

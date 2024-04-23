@@ -8,7 +8,14 @@ package irrgarten;
  * The Weapon class represents a weapon with a certain power and number of uses.
  */
 public class Weapon {
+    /**
+     * The power of the weapon.
+     */
     private float power = 0;
+
+    /**
+     * The number of uses left for the weapon.
+     */
     private int uses = 0;
     
     /**

@@ -1,12 +1,12 @@
 # Test program to check the functionality of all the classes and modules 
 # developed in Practice 1
-require_relative "Directions.rb"
-require_relative "Orientation.rb"
-require_relative "GameCharacter.rb"
-require_relative "Weapon.rb"
-require_relative "Shield.rb"
-require_relative "Dice.rb"
-require_relative "GameState.rb"
+require_relative "directions.rb"
+require_relative "orientation.rb"
+require_relative "game_character.rb"
+require_relative "weapon.rb"
+require_relative "shield.rb"
+require_relative "dice.rb"
+require_relative "game_state.rb"
 
 class TestP1
     # ENUM TYPES

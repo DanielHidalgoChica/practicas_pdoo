@@ -1,9 +1,17 @@
+#encoding:utf-8
 module Irrgarten
     # The Player class represents a player in the Irrgarten game.
     class Player
+        # The maximum number of weapons a player can have.
         @@MAX_WEAPONS = 2
+
+        # The maximum number of shields a player can have.
         @@MAX_SHIELDS = 3
+
+        # The initial health of a player.
         @@INITIAL_HEALTH = 10
+
+        # The number of consecutive hits a player can take before losing.
         @@HITS2LOSE = 3
 
         # Initializes a new instance of the Player class.
@@ -16,6 +24,7 @@ module Irrgarten
             @name = "Player #{@number}"
             @intelligence = intelligence
             @strength = strength
+            set_pos(nil,nil)
             self.resurrect
         end
 
@@ -45,12 +54,20 @@ module Irrgarten
             @health <= 0
         end
 
-        # Moves the player in the specified direction.
-        #
+        # Moves the player in a given direction.
+        # If the direction is not valid, the player will move in the first valid direction.
+        # If there are no valid directions, the player will stay in the same position.
         # @param direction [Symbol] The direction to move.
-        # @param valid_moves [Array<Symbol>] The valid moves for the player.
+        # @param valid_moves [Array<Symbol>] The valid directions to move.
+        # @return [Symbol] The direction the player moved.
         def move(direction, valid_moves)
-            # Implementation goes here
+            size = valid_moves.size
+            contained = valid_moves.include?(direction)
+            if (size > 0 && !contained)
+                valid_moves[0]
+            else
+                direction
+            end
         end
 
         # Calculates the player's attack power.
@@ -64,28 +81,40 @@ module Irrgarten
         #
         # @param received_attack [Integer] The attack power received.
         def defend(received_attack)
-            # Implementation goes here
+            manage_hit(received_attack)
         end
 
-        # Receives a reward.
+        # Receives a reward for winning a combat.
+        # The reward consists of new weapons, shields, and health points.
+        # The number of health points, weapons and shields is determined by the Dice class.
         def receive_reward
-            # Implementation goes here
+            w_reward = Dice.weapons_reward
+            s_reward = Dice.shields_reward
+            w_reward.times do
+                wnew = self.new_weapon
+                self.receive_weapon(wnew)
+            end
+            s_reward.times do
+                snew = self.new_shield
+                self.receive_shield(snew)
+            end
+            extra_health = Dice.health_reward
+            @health += extra_health
         end
 
         # Returns a string representation of the player's state.
         #
         # @return [String] The player's state.
         def to_s
-            ret = "\nPlayer State" +
-                        "\nName:" + @name +
-                        "\nIntelligence:" + @intelligence.to_s +
-                        "\nStrength:" + @strength.to_s +
-                        "\nHealth:" + @health.to_s +
-                        "\nPosition: (" + @row.to_s + "," + @col.to_s + ")" +
-                        "\nConsecutive Hits: " + @consecutive_hits.to_s +
-                        "\nWeapons:"
+            ret = "P[" + @name.to_str +
+                    ", Intelligence: " + @intelligence.to_s +
+                    ", Strength: " + @strength.to_s +
+                    ", Health: " + @health.to_s +
+                    ", Pos(" + @row.to_s + "," + @col.to_s + ")" +
+                    ", ConsecHits: " + @consecutive_hits.to_s +
+                    ", \n\tWeapons: "
             @weapons.each { |a_weapon| ret += "\n\t" + a_weapon.to_s }
-            ret += "\nShields:"
+            ret += "\n\tShields:"
             @shields.each { |a_shield| ret += "\n\t" + a_shield.to_s }
             ret
         end
@@ -96,14 +125,22 @@ module Irrgarten
         #
         # @param w [Weapon] The weapon to receive.
         def receive_weapon(w)
-            # Implementation goes here
+            @weapons.delete_if { |wi| wi.discard }
+            size = @weapons.length
+            if size < @@MAX_WEAPONS
+                @weapons << w
+            end
         end
 
         # Receives a shield.
         #
         # @param s [Shield] The shield to receive.
         def receive_shield(s)
-            # Implementation goes here
+            @shields.delete_if { |si| si.discard }
+            size = @shields.length
+            if size < @@MAX_SHIELDS
+                @shields << s
+            end
         end
 
         # Creates a new weapon.
@@ -111,9 +148,8 @@ module Irrgarten
         # @return [Weapon] The new weapon.
         def new_weapon
             r_power = Dice.weapon_power
-            r_uses = Dice.weapon_uses
-            new_weapon = Weapon.new(r_power, r_uses)
-            new_weapon
+            r_uses = Dice.uses_left
+            Weapon.new(r_power, r_uses)
         end
 
         # Creates a new shield.
@@ -122,8 +158,7 @@ module Irrgarten
         def new_shield
             r_protection = Dice.shield_power
             r_uses = Dice.uses_left
-            new_shield = shield.new(shield_power, uses_left)
-            new_shield
+            Shield.new(r_protection, r_uses)
         end
 
         # Calculates the total attack power of all weapons.
@@ -151,11 +186,27 @@ module Irrgarten
             self.sum_shields + @intelligence
         end
 
-        # Manages the hit received by the player.
-        #
+        # Manages the player's state when hit.
+        # If the player is hit, the consecutive hits counter is increased.
+        # If the player is not hit, the counter is reset.
+        # If the player has received the maximum number of consecutive hits, the player loses.
         # @param received_attack [Integer] The attack power received.
+        # @return [Boolean] True if the player has lost, false otherwise.
         def manage_hit(received_attack)
-            # Implementation goes here
+            defense = self.defensive_energy
+            if defense < received_attack
+                self.got_wounded
+                self.inc_consecutive_hits
+            else
+                self.reset_hits
+            end
+            if ((@consecutive_hits == @@HITS2LOSE) || self.dead)
+                self.reset_hits
+                lose = true
+            else
+                lose = false
+            end
+            lose
         end
 
         # Resets the consecutive hits counter.
@@ -165,7 +216,7 @@ module Irrgarten
 
         # Decreases the player's health when wounded.
         def got_wounded
-            @health = @health - @@HEALTH_DECREMENT
+            @health = @health - 1
         end
 
         # Increases the consecutive hits counter.

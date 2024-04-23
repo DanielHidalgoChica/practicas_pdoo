@@ -62,7 +62,11 @@ public class Labyrinth {
      * @param players List of players to spread.
      */
     public void spreadPlayers(ArrayList<Player> players){
-        throw new UnsupportedOperationException();
+        for(Player p : players){
+            int [] pos = this.randomEmptyPos();
+            int nul_val = -1;
+            putPlayer2D(nul_val,nul_val, pos[ROW], pos[COL], p);
+        }
     }
 
     /**
@@ -114,7 +118,14 @@ public class Labyrinth {
      * @return The monster encountered, if any, while moving the player.
      */
     public Monster putPlayer(Directions direction, Player player){
-        throw new UnsupportedOperationException();
+        int oldRow = player.getRow();
+        int oldCol = player.getCol();
+        int [] newPos = dir2Pos(oldRow, oldCol, direction);
+        Monster monster = putPlayer2D(oldRow, oldCol, 
+                                      newPos[Labyrinth.ROW], 
+                                      newPos[Labyrinth.COL],player);
+        return monster;
+        
     }
 
     /**
@@ -125,17 +136,49 @@ public class Labyrinth {
      * @param length The length of the block.
      */
     public void addBlock(Orientation orientation, int startRow, int startCol, int length) {
-        throw new UnsupportedOperationException();
+        int incRow, incCol;
+        if(orientation == Orientation.VERTICAL){
+            incRow = 1;
+            incCol = 0;
+        }
+        else{
+            incRow = 0;
+            incCol = 1;
+        }
+        
+        int row = startRow, col = startCol;
+        
+        while (posOK(row,col) && emptyPos(row,col) && (length > 0)){
+            labyrinth[row][col] = BLOCK_CHAR;
+            length-=1;
+            row+=incRow;
+            col+=incCol;
+        }
+            
     }
 
     /**
      * Determines valid moves from the given position.
      * @param row The row index of the position.
      * @param col The column index of the position.
-     * @return List of valid moves from the given position.
+     * @return A list of valid moves from the position.
      */
     public ArrayList<Directions> validMoves(int row, int col) {
-        throw new UnsupportedOperationException();
+        ArrayList<Directions> output = new ArrayList<Directions>(0);
+        
+        if (canStepOn(row+1,col))
+            output.add(Directions.DOWN);
+        
+        if (canStepOn(row-1,col))
+            output.add(Directions.UP);
+        
+        if (canStepOn(row,col+1))
+            output.add(Directions.RIGHT);
+        
+        if (canStepOn(row,col-1))
+            output.add(Directions.LEFT);
+        
+        return output;
     }
 
     /**
@@ -197,10 +240,15 @@ public class Labyrinth {
      */
     private boolean canStepOn(int row, int col){
         boolean validPos = posOK(row, col);
-        boolean empty = emptyPos(row, col);
-        boolean monsterPos = monsterPos(row, col);
-        boolean exit = exitPos(row, col);
-        return (validPos || empty || monsterPos || exit);
+        boolean canStep = false;
+        if(validPos) {
+            boolean empty = emptyPos(row, col);
+            boolean monsterPos = monsterPos(row, col);
+            boolean exit = exitPos(row, col);
+            canStep = empty || monsterPos || exit;
+        }
+        
+        return canStep;
     }
 
     /**
@@ -210,11 +258,11 @@ public class Labyrinth {
      */
     private void updateOldPos(int row, int col){
         if (posOK(row, col)) {
-            if (combatPos(row, col)) {
-            this.labyrinth[row][col] = Labyrinth.MONSTER_CHAR;
-            } else {
-            this.labyrinth[row][col] = Labyrinth.EMPTY_CHAR;
-            }
+            if (combatPos(row, col))
+                this.labyrinth[row][col] = Labyrinth.MONSTER_CHAR;
+            else 
+                this.labyrinth[row][col] = Labyrinth.EMPTY_CHAR;
+            
         }
     }
 
@@ -225,7 +273,7 @@ public class Labyrinth {
      * @param direction The direction of movement.
      * @return An array containing the new row and column indices.
      */
-    private int[] dir2pos(int row, int col, Directions direction) {
+    private int[] dir2Pos(int row, int col, Directions direction) {
         int [] pos = {row,col};
         switch (direction){
             case LEFT: 
@@ -260,12 +308,41 @@ public class Labyrinth {
     }
 
     /**
-     * Placeholder method for placing a player in the labyrinth in 2D.
-     * @return The monster encountered, if any, while putting the player.
-     * @throws UnsupportedOperationException if the method is not implemented.
+     * Moves a player to the specified position in the labyrinth.
+     * @param oldRow The row index of the player's old position.
+     * @param oldCol The column index of the player's old position.
+     * @param row The row index of the player's new position.
+     * @param col The column index of the player's new position.
+     * @param player The player to be moved.
+     * @return The monster encountered, if any, while moving the player.
      */
-    private Monster putPlayer2D (){
-        throw new UnsupportedOperationException();
+    private Monster putPlayer2D (int oldRow, int oldCol, int row, int col, Player player){
+        Monster output = null;
+        if (canStepOn(row,col)){
+            
+            if(posOK(oldRow,oldCol)){
+                Player p = this.players[oldRow][oldCol];
+                if(p == player){
+                    this.updateOldPos(oldRow,oldCol);
+                    this.players[oldRow][oldCol] = null;
+                }
+            }
+            
+            
+            if(monsterPos(row,col)){
+                this.labyrinth[row][col]=COMBAT_CHAR;
+                output = this.monsters[row][col];
+            }
+            else{
+                char number = player.getNumber();
+                this.labyrinth[row][col]=number;
+            }
+            
+            this.players[row][col]=player;
+            player.setPos(row,col);
+        }
+        
+        return output;
     }
 
 }

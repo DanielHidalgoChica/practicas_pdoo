@@ -163,11 +163,8 @@ public class Dice {
      * @return true if a weapon must be discarded, false otherwise
      */
     public static boolean discardElement(int usesLeft){
-        if (usesLeft == MAX_USES) {
-            return false;
-        } else {
-            float discardProbability = 1 - ((float) usesLeft / MAX_USES);
-            return (generator.nextFloat() <= discardProbability);
-        }  
+        float discardProbability = 1 - ((float) usesLeft / MAX_USES);
+        return (generator.nextFloat() < discardProbability);
+
     }
 }
