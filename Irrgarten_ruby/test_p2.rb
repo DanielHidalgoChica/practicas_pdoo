@@ -1,11 +1,11 @@
 #encoding: utf-8
-require_relative "Dice.rb"
-require_relative "Monster.rb"
-require_relative "Player.rb"
-require_relative "Labyrinth.rb"
-require_relative "Game.rb"
-require_relative "GameState.rb"
-require_relative "Orientation.rb"
+require_relative "dice.rb"
+require_relative "monster.rb"
+require_relative "player.rb"
+require_relative "labyrinth.rb"
+require_relative "game.rb"
+require_relative "game_state.rb"
+require_relative "orientation.rb"
 
 class TestP2
     def self.test_monster

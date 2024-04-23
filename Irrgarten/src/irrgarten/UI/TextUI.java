@@ -55,8 +55,8 @@ public class TextUI {
         System.out.println(gameState.getMonsters());
         System.out.println(gameState.getPlayers());
         System.out.println("Current Player: " + gameState.getCurrentPlayer());
-        System.out.println("\n" + gameState.getLabyrinth());
         System.out.println("Log \n" + gameState.getLog());
+        System.out.println("\n" + gameState.getLabyrinth());
         
     }
     

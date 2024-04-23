@@ -144,10 +144,12 @@ public class Game {
      * @return The actual direction of the player.
      */
     private Directions actualDirection(Directions preferredDirection) {
-        int currentRow = currentPlayer.getRow();
-        int currentCol = currentPlayer.getCol();
-        ArrayList<Directions> validMoves = labyrinth.validMoves(currentRow, currentCol);
-        Directions output = currentPlayer.move(preferredDirection, validMoves);
+        int currentRow = this.currentPlayer.getRow();
+        int currentCol = this.currentPlayer.getCol();
+        ArrayList<Directions> validMoves = 
+                            this.labyrinth.validMoves(currentRow, currentCol);
+        Directions output = 
+                        this.currentPlayer.move(preferredDirection, validMoves);
         return output;
     }
 
@@ -160,22 +162,23 @@ public class Game {
     private GameCharacter combat(Monster monster){
         int rounds = 0;
         GameCharacter winner = GameCharacter.PLAYER;
-        float playerAttack = currentPlayer.attack();
+        float playerAttack = this.currentPlayer.attack();
         boolean lose = monster.defend(playerAttack);
         float monsterAttack;
-        while(!lose && (rounds< MAX_ROUNDS)){
+        
+        while(!lose && (rounds< Game.MAX_ROUNDS)){
             winner = GameCharacter.MONSTER;
             rounds++;
             monsterAttack = monster.attack();
-            lose = currentPlayer.defend(monsterAttack);
+            lose = this.currentPlayer.defend(monsterAttack);
             if(!lose){
-                playerAttack = currentPlayer.attack();
+                playerAttack = this.currentPlayer.attack();
                 winner = GameCharacter.PLAYER;
-                lose = monster.defend(playerAttack);
-                
+                lose = monster.defend(playerAttack); 
             }
         }
-        this.logRounds(rounds, MAX_ROUNDS);
+        
+        this.logRounds(rounds, Game.MAX_ROUNDS);
         return winner;
     }
 
@@ -202,9 +205,8 @@ public class Game {
     private void manageResurrection() {
         boolean resurrect = Dice.resurrectPlayer();
         if (resurrect){
-            currentPlayer.resurrect();
-            this.logResurrected();
-            
+            this.currentPlayer.resurrect();
+            this.logResurrected();  
         }
         else
             this.logPlayerSkipTurn();

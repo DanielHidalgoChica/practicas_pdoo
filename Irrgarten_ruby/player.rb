@@ -91,14 +91,14 @@ module Irrgarten
             w_reward = Dice.weapons_reward
             s_reward = Dice.shields_reward
             w_reward.times do
-                wnew = new_weapon
-                receive_weapon(wnew)
+                wnew = self.new_weapon
+                self.receive_weapon(wnew)
             end
             s_reward.times do
-                snew = new_shield
-                receive_shield(snew)
+                snew = self.new_shield
+                self.receive_shield(snew)
             end
-            extra_health =Dice.health_reward
+            extra_health = Dice.health_reward
             @health += extra_health
         end
 
@@ -106,16 +106,15 @@ module Irrgarten
         #
         # @return [String] The player's state.
         def to_s
-            ret = "\nPlayer State" +
-                        "\nName: " + @name +
-                        "\nIntelligence: " + @intelligence.to_s +
-                        "\nStrength: " + @strength.to_s +
-                        "\nHealth: " + @health.to_s +
-                        "\nPosition: (" + @row.to_s + "," + @col.to_s + ")" +
-                        "\nConsecutive Hits: " + @consecutive_hits.to_s +
-                        "\nWeapons: "
+            ret = "P[" + @name.to_str +
+                    ", Intelligence: " + @intelligence.to_s +
+                    ", Strength: " + @strength.to_s +
+                    ", Health: " + @health.to_s +
+                    ", Pos(" + @row.to_s + "," + @col.to_s + ")" +
+                    ", ConsecHits: " + @consecutive_hits.to_s +
+                    ", \n\tWeapons: "
             @weapons.each { |a_weapon| ret += "\n\t" + a_weapon.to_s }
-            ret += "\nShields:"
+            ret += "\n\tShields:"
             @shields.each { |a_shield| ret += "\n\t" + a_shield.to_s }
             ret
         end
@@ -127,7 +126,7 @@ module Irrgarten
         # @param w [Weapon] The weapon to receive.
         def receive_weapon(w)
             @weapons.delete_if { |wi| wi.discard }
-            size = @weapons.size
+            size = @weapons.length
             if size < @@MAX_WEAPONS
                 @weapons << w
             end
@@ -138,7 +137,7 @@ module Irrgarten
         # @param s [Shield] The shield to receive.
         def receive_shield(s)
             @shields.delete_if { |si| si.discard }
-            size = @shields.size
+            size = @shields.length
             if size < @@MAX_SHIELDS
                 @shields << s
             end
@@ -196,13 +195,13 @@ module Irrgarten
         def manage_hit(received_attack)
             defense = self.defensive_energy
             if defense < received_attack
-                got_wounded
-                inc_consecutive_hits
+                self.got_wounded
+                self.inc_consecutive_hits
             else
-                reset_hits
+                self.reset_hits
             end
-            if (@consecutive_hits == @@HITS2LOSE) || self.dead
-                reset_hits
+            if ((@consecutive_hits == @@HITS2LOSE) || self.dead)
+                self.reset_hits
                 lose = true
             else
                 lose = false

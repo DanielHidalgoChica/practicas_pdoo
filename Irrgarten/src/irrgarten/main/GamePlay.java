@@ -8,7 +8,7 @@ import irrgarten.UI.TextUI;
  * @author Daniel Hidalgo Chica and Luis Esteban Valdivieso
  */
 public class GamePlay {
-    static final int N_PLAYERS=4;
+    static final int N_PLAYERS=1;
     public static void main (String [] args){
         
         Game game = new Game(N_PLAYERS);

@@ -29,30 +29,30 @@ module Irrgarten
         # @return [Boolean] True if the game has finished, false otherwise.
         def next_step(preferred_direction)
             @log=""
-            dead=@current_player.dead
+            dead = @current_player.dead
+
             if !dead
                 direction = actual_direction(preferred_direction)
                 if direction != preferred_direction
-                    log_player_no_orders
+                    self.log_player_no_orders
                 end
 
                 monster = @labyrinth.put_player(direction, @current_player)
 
                 if monster.nil?
-                    log_no_monster
+                    self.log_no_monster
                 else
-                    winner=combat(monster)
-                    manage_reward(winner)
+                    winner = self.combat(monster)
+                    self.manage_reward(winner)
                 end
             else
-                manage_resurrection
+                self.manage_resurrection
             end
 
-            end_game=finished
+            end_game = self.finished
             if !end_game
-                next_player
+                self.next_player
             end
-
             end_game
         end
 
@@ -121,8 +121,8 @@ module Irrgarten
         # @param preferred_direction [Symbol] The preferred direction to move.
         # @return [Symbol] The actual direction to move.
         def actual_direction(preferred_direction)
-            current_row=@current_player.row
-            current_col=@current_player.col
+            current_row = @current_player.row
+            current_col = @current_player.col
             valid_moves = @labyrinth.valid_moves(current_row, current_col)
             @current_player.move(preferred_direction, valid_moves)
         end
@@ -134,9 +134,10 @@ module Irrgarten
         def combat(monster)
             rounds = 0
             winner = GameCharacter::PLAYER
-            player_attack= @current_player.attack
+            player_attack = @current_player.attack
             lose = monster.defend(player_attack)
-            while !lose && rounds < @@MAX_ROUNDS
+
+            while (!lose && rounds < @@MAX_ROUNDS)
                 winner = GameCharacter::MONSTER
                 rounds+=1
                 monster_attack = monster.attack
@@ -146,9 +147,9 @@ module Irrgarten
                     winner = GameCharacter::PLAYER
                     lose = monster.defend(player_attack)
                 end
-
             end
-            log_rounds(rounds, @@MAX_ROUNDS)
+
+            self.log_rounds(rounds, @@MAX_ROUNDS)
             winner
         end
 
@@ -157,11 +158,11 @@ module Irrgarten
         # @note The winner of the combat receives a reward.
         # @note The reward is a random weapon or shield.
         def manage_reward(winner)
-            if winner==GameCharacter::PLAYER
+            if winner == GameCharacter::PLAYER
                 @current_player.receive_reward
-                log_player_won
+                self.log_player_won
             else
-                log_monster_won
+                self.log_monster_won
             end
         end
 
@@ -171,9 +172,9 @@ module Irrgarten
             resurrect = Dice.resurrect_player
             if resurrect
                 @current_player.resurrect
-                log_resurrected
+                self.log_resurrected
             else
-                log_player_skip_turn
+                self.log_player_skip_turn
             end
         end
 

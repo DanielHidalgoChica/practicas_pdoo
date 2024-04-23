@@ -62,10 +62,10 @@ public class Labyrinth {
      * @param players List of players to spread.
      */
     public void spreadPlayers(ArrayList<Player> players){
-        for (int i = 0; i < players.size(); i++){
-            Player p = players.get(i);
-            int [] pos = randomEmptyPos();
-            putPlayer2D(-1,-1, pos[ROW], pos[COL], p);
+        for(Player p : players){
+            int [] pos = this.randomEmptyPos();
+            int nul_val = -1;
+            putPlayer2D(nul_val,nul_val, pos[ROW], pos[COL], p);
         }
     }
 
@@ -121,7 +121,9 @@ public class Labyrinth {
         int oldRow = player.getRow();
         int oldCol = player.getCol();
         int [] newPos = dir2Pos(oldRow, oldCol, direction);
-        Monster monster = putPlayer2D(oldRow, oldCol, newPos[ROW], newPos[COL],player);
+        Monster monster = putPlayer2D(oldRow, oldCol, 
+                                      newPos[Labyrinth.ROW], 
+                                      newPos[Labyrinth.COL],player);
         return monster;
         
     }
@@ -162,14 +164,17 @@ public class Labyrinth {
      * @return A list of valid moves from the position.
      */
     public ArrayList<Directions> validMoves(int row, int col) {
-        ArrayList<Directions> output = new ArrayList(0);
+        ArrayList<Directions> output = new ArrayList<Directions>(0);
         
-        if      (canStepOn(row+1,col))
+        if (canStepOn(row+1,col))
             output.add(Directions.DOWN);
+        
         if (canStepOn(row-1,col))
             output.add(Directions.UP);
+        
         if (canStepOn(row,col+1))
             output.add(Directions.RIGHT);
+        
         if (canStepOn(row,col-1))
             output.add(Directions.LEFT);
         
@@ -316,24 +321,24 @@ public class Labyrinth {
         if (canStepOn(row,col)){
             
             if(posOK(oldRow,oldCol)){
-                Player p = players[oldRow][oldCol];
+                Player p = this.players[oldRow][oldCol];
                 if(p == player){
-                    updateOldPos(oldRow,oldCol);
-                    players[oldRow][oldCol] = null;
+                    this.updateOldPos(oldRow,oldCol);
+                    this.players[oldRow][oldCol] = null;
                 }
             }
             
-            boolean monsterPos = monsterPos(row,col);
-            if(monsterPos){
-                labyrinth[row][col]=COMBAT_CHAR;
-                output = monsters[row][col];
+            
+            if(monsterPos(row,col)){
+                this.labyrinth[row][col]=COMBAT_CHAR;
+                output = this.monsters[row][col];
             }
             else{
                 char number = player.getNumber();
-                labyrinth[row][col]=number;
+                this.labyrinth[row][col]=number;
             }
             
-            players[row][col]=player;
+            this.players[row][col]=player;
             player.setPos(row,col);
         }
         

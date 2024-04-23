@@ -1,6 +1,6 @@
 
 require 'io/console'
-require_relative '../Directions.rb'
+require_relative '../directions.rb'
 
 module UI
 
@@ -61,11 +61,13 @@ module UI
     end
 
     def show_game(game_state)
+        puts "------------------------------------------------------------"
         puts game_state.monsters.to_s
         puts game_state.players.to_s
         puts "Current Player: " + game_state.current_player.to_s
-        puts "\n" + game_state.labyrinth.to_s
         puts "Log \n" + game_state.log.to_s
+        puts "\n" + game_state.labyrinth.to_s
+
     end
 
   end # class   

@@ -52,9 +52,9 @@ public class Monster {
     boolean defend(float receivedAttack) {
         boolean isDead = this.dead();
         if(!isDead){
-            float defensiveEnergy = Dice.intensity(intelligence);
+            float defensiveEnergy = Dice.intensity(this.intelligence);
             if(defensiveEnergy < receivedAttack){
-                gotWounded();
+                this.gotWounded();
                 isDead=this.dead();
             }
                 
@@ -77,12 +77,11 @@ public class Monster {
      * @return a string representation of the monster
      */
     public String toString(){
-        String ret = "\nMonster State"
-                    + "\nName:" + this.name
-                    + "\nIntelligence:" + Float.toString(intelligence)
-                    + "\nStrength:"+ Float.toString(strength)
-                    + "\nHealth:"+  Float.toString(health)
-                    + "\nPosition: (" + Integer.toString(row) + "," + Integer.toString(col) + ")\n";
+        String ret ="M[" + this.name
+                    + ",Intelligence:" + Float.toString(intelligence)
+                    + ", Strength:"+ Float.toString(strength)
+                    + ", Health:"+  Float.toString(health)
+                    + ", Pos(" + Integer.toString(row) + "," + Integer.toString(col) + ")]\n";
         return ret;
     }
 

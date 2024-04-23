@@ -48,6 +48,7 @@ module Irrgarten
                 pos = random_empty_pos
                 put_player_2D(-1, -1, pos[@@ROW], pos[@@COL], p)
             end
+            nil
         end
 
         # Checks if there is a winner in the labyrinth.
@@ -91,9 +92,9 @@ module Irrgarten
         # @param direction [Symbol] the direction to put the player
         # @param player [Player] the player to put
         def put_player(direction, player)
-            old_row=player.row
-            old_col=player.col
-            new_pos=dir2pos(old_row, old_col, direction)
+            old_row = player.row
+            old_col = player.col
+            new_pos = dir2pos(old_row, old_col, direction)
             put_player_2D(old_row, old_col, new_pos[@@ROW], new_pos[@@COL], player)
         end
 
@@ -129,18 +130,10 @@ module Irrgarten
         # @return [Array<Directions>] the valid moves from the position
         def valid_moves(row, col)
             output = Array.new(0)
-            if can_step_on(row+1, col)
-                output << Directions::DOWN
-            end
-            if can_step_on(row-1, col)
-                output << Directions::UP
-            end
-            if can_step_on(row, col+1)
-                output << Directions::RIGHT
-            end
-            if can_step_on(row, col-1)
-                output << Directions::LEFT
-            end
+            output << Directions::DOWN if can_step_on(row + 1, col)
+            output << Directions::UP if can_step_on(row - 1, col)
+            output << Directions::RIGHT if can_step_on(row, col + 1)
+            output << Directions::LEFT if can_step_on(row, col - 1)
             output
         end
 
@@ -273,14 +266,11 @@ module Irrgarten
                     end
                 end
 
-                monster_pos=monster_pos(row, col)
-
-                if monster_pos
+                if monster_pos(row, col)
                     @labyrinth[row][col] = @@COMBAT_CHAR
                     output = @monsters[row][col]
                 else
-                    number = player.number
-                    @labyrinth[row][col] = number
+                    @labyrinth[row][col] = player.number
                 end
 
                 @players[row][col]=player

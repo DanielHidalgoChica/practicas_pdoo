@@ -185,17 +185,17 @@ public class Player {
         int wReward = Dice.weaponsReward();
         int sReward = Dice.shieldsReward();
         for (int i= 0; i < wReward; i++){
-            Weapon wnew = newWeapon();
-            receiveWeapon(wnew);
+            Weapon wNew = this.newWeapon();
+            this.receiveWeapon(wNew);
         }
         
         for (int i= 0; i < sReward; i++){
-            Shield snew = newShield();
-            receiveShield(snew);
+            Shield sNew = this.newShield();
+            this.receiveShield(sNew);
         }
         
         int extraHealth = Dice.healthReward();
-        health+=extraHealth;
+        this.health+=extraHealth;
     }
     
     /**
@@ -203,19 +203,18 @@ public class Player {
      * @return The string representation of the player.
      */
     public String toString(){
-        String ret = "\nPlayer State"
-                    + "\n" + this.name
-                    + "\nIntelligence: " + Float.toString(intelligence)
-                    + " Strength: "+ Float.toString(strength)
-                    + "\nHealth: "+  Float.toString(health)
-                    + "\nPos:(" + Integer.toString(row) + "," + Integer.toString(col) + ")"
-                    + "\nConsecutive Hits: "+  Integer.toString(this.consecutiveHits)
-                    + "\nWeapons: ";
+        String ret = "P[" + this.name
+                    + ", Intelligence: " + Float.toString(intelligence)
+                    + ", Strength: "+ Float.toString(strength)
+                    + ", Health: "+  Float.toString(health)
+                    + ", Pos:(" + Integer.toString(row) + "," + Integer.toString(col) + ")"
+                    + ", ConsecHits: "+  Integer.toString(this.consecutiveHits)
+                    + "]\n\tWeapons: ";
 	    // Muestro las armas
 	    for (Weapon aWeapon : this.weapons) {
 	        ret +=  "\n\t" + aWeapon.toString();
 	    }
-	    ret += "\nShields: ";
+	    ret += "\n\tShields: ";
 	    for (Shield aShield : this.shields) {
 	        ret += "\n\t" + aShield.toString();
 	    }
@@ -229,10 +228,10 @@ public class Player {
      */
     private void receiveWeapon(Weapon w){
         
-        weapons.removeIf(wi -> wi.discard());
-        int size = weapons.size();
+        this.weapons.removeIf(wi -> wi.discard());
+        int size = this.weapons.size();
         if(size < MAX_WEAPONS)
-            weapons.add(w);
+            this.weapons.add(w);
     }
 
     /**
@@ -241,10 +240,10 @@ public class Player {
      */
     private void receiveShield(Shield s){
         
-        shields.removeIf(si -> si.discard());
-        int size = shields.size();
-        if(size < MAX_SHIELDS)
-            shields.add(s);
+        this.shields.removeIf(si -> si.discard());
+        int size = this.shields.size();
+        if(size < Player.MAX_SHIELDS)
+            this.shields.add(s);
 
     }
     
@@ -308,17 +307,17 @@ public class Player {
      * @return true if the player lost, false otherwise.
      */
     private boolean manageHit(float receivedAttack){
-        float defense = defensiveEnergy();
+        float defense = this.defensiveEnergy();
         if(defense < receivedAttack){
-            gotWounded();
-            incConsecutiveHits();
+            this.gotWounded();
+            this.incConsecutiveHits();
         }
         else
-            resetHits();
+            this.resetHits();
         
         boolean lose;
-        if( (consecutiveHits == HITS2LOSE) || dead()){
-            resetHits();
+        if( (this.consecutiveHits == Player.HITS2LOSE) || dead()){
+            this.resetHits();
             lose = true;
         }
         else

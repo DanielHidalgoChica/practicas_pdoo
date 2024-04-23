@@ -45,7 +45,7 @@ module Irrgarten
             if !is_dead
                 defensive_energy = Dice.intensity(@intelligence)
                 if defensive_energy < received_attack
-                    got_wounded
+                    self.got_wounded
                     is_dead = self.dead
                 end
             end
@@ -66,12 +66,11 @@ module Irrgarten
         #
         # @return [String] Returns a string containing the monster's name, intelligence, strength, health, and position.
         def to_s
-            ret = "\nMonster State" +
-                        "\nName: #{@name}" +
-                        "\nIntelligence: #{@intelligence}" +
-                        "\nStrength: #{@strength}" +
-                        "\nHealth: #{@health}" +
-                        "\nPosition: (#{@row}, #{@col})\n"
+            ret ="M[" + "#{@name}" +
+                    ", Intelligence: #{@intelligence}" +
+                    ", Strength: #{@strength}" +
+                    ", Health: #{@health}" +
+                    ", Pos(#{@row}, #{@col})\n"
             ret
         end
 
