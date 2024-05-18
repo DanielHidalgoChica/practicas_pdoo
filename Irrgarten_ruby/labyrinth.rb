@@ -1,4 +1,7 @@
 #encoding:utf-8
+require_relative 'dice'
+require_relative 'orientation'
+require_relative 'directions'
 module Irrgarten
     # The Labyrinth class represents a maze game.
     class Labyrinth
@@ -45,8 +48,8 @@ module Irrgarten
         # @param players [Array<Player>] the players to spread
         def spread_players(players)
             players.each do |p|
-                pos = random_empty_pos
-                put_player_2D(-1, -1, pos[@@ROW], pos[@@COL], p)
+                pos = self.random_empty_pos
+                self.put_player_2D(-1, -1, pos[@@ROW], pos[@@COL], p)
             end
             nil
         end
@@ -62,15 +65,14 @@ module Irrgarten
         #
         # @return [String] the labyrinth as a string
         def to_s
-            string = ""
+            string = ''
             @labyrinth.each do |row|
-                string << "|"
+                string << '|'
                 row.each do |box|
                     string << "#{box}|"
                 end
                 string << "\n"
             end
-
             string
         end
 
@@ -80,7 +82,7 @@ module Irrgarten
         # @param col [Integer] the column index of the monster's position
         # @param monster [Monster] the monster to add
         def add_monster(row, col, monster)
-            if (pos_OK(row, col) && empty_pos(row, col))
+            if self.pos_OK(row, col) && self.empty_pos(row, col)
                 @monsters[row][col] = monster
                 @labyrinth[row][col] = @@MONSTER_CHAR
                 monster.set_pos(row, col)
@@ -94,8 +96,8 @@ module Irrgarten
         def put_player(direction, player)
             old_row = player.row
             old_col = player.col
-            new_pos = dir2pos(old_row, old_col, direction)
-            put_player_2D(old_row, old_col, new_pos[@@ROW], new_pos[@@COL], player)
+            new_pos = self.dir2pos(old_row, old_col, direction)
+            self.put_player_2D(old_row, old_col, new_pos[@@ROW], new_pos[@@COL], player)
         end
 
         # Adds a block to the labyrinth.
@@ -113,10 +115,9 @@ module Irrgarten
                 inc_col = 1
             end
 
-            row=start_row
-            col=start_col
-
-            while pos_OK(row, col) && empty_pos(row, col) && length.positive?
+            row = start_row
+            col = start_col
+            while self.pos_OK(row, col) && self.empty_pos(row, col) && length > 0
                 @labyrinth[row][col] = @@BLOCK_CHAR
                 length -= 1
                 row += inc_row
@@ -190,12 +191,8 @@ module Irrgarten
         # @param col [Integer] the column index of the position
         # @return [Boolean] true if the position can be stepped on, false otherwise
         def can_step_on(row, col)
-            valid_pos = pos_OK(row,col)
-            can_step = valid_pos
-            if valid_pos
-                can_step = empty_pos(row, col) || monster_pos(row, col) || exit_pos(row, col)
-            end
-            can_step
+            valid_pos = self.pos_OK(row,col)
+            valid_pos && (self.empty_pos(row, col) || self.monster_pos(row, col) || self.exit_pos(row, col))
         end
 
         # Updates the old position after moving.
@@ -203,8 +200,8 @@ module Irrgarten
         # @param row [Integer] the row index of the position
         # @param col [Integer] the column index of the position
         def update_old_pos(row, col)
-            if pos_OK(row, col)
-                if combat_pos(row, col)
+            if self.pos_OK(row, col)
+                if self.combat_pos(row, col)
                     @labyrinth[row][col] = @@MONSTER_CHAR
                 else
                     @labyrinth[row][col] = @@EMPTY_CHAR
@@ -257,16 +254,16 @@ module Irrgarten
         # @return [Monster] the monster in the new position, or nil if there is no monster
         def put_player_2D (old_row, old_col, row, col, player)
             output = nil
-            if can_step_on(row, col)
-                if pos_OK(old_row, old_col)
+            if self.can_step_on(row, col)
+                if self.pos_OK(old_row, old_col)
                     p = @players[old_row][old_col]
                     if p == player
-                        update_old_pos(old_row, old_col)
+                        self.update_old_pos(old_row, old_col)
                         @players[old_row][old_col]=nil
                     end
                 end
 
-                if monster_pos(row, col)
+                if self.monster_pos(row, col)
                     @labyrinth[row][col] = @@COMBAT_CHAR
                     output = @monsters[row][col]
                 else
@@ -279,6 +276,16 @@ module Irrgarten
             end
 
             output
+        end
+
+        public
+        # Updates the player in the labyrinth.
+        # @param player [Player] the player to update
+        # @return [Player] the player in the new position, or nil if there is no player
+        def update_player(player)
+            if @players[player.row][player.col].nil?
+                @players[player.row][player.col] = player
+            end
         end
     end
 end

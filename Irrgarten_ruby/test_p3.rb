@@ -1,13 +1,7 @@
-#encoding: utf-8
-require_relative "player.rb"
-require_relative "dice.rb"
-require_relative "monster.rb"
-require_relative "labyrinth.rb"
-require_relative "game.rb"
-require_relative "game_state.rb"
-require_relative "orientation.rb"
-require_relative "directions.rb"
-require_relative "game_character.rb"
+# encoding:utf-8
+require_relative 'directions'
+require_relative 'game'
+
 class TestP3
     def self.main
         game = Irrgarten::Game.new(3)

@@ -1,35 +1,9 @@
-#encoding:utf-8
-# The Irrgarten module represents a collection of classes and methods
-# related to a game called Irrgarten. It provides functionality for
-# dice rolling, random number generation, and various game mechanics.
-#
-# The module contains the `Dice` class, which encapsulates methods for
-# generating random values, calculating rewards, and making decisions
-# based on probabilities. It also defines several class variables that
-# determine the game's rules and limits.
-#
-# The `Dice` class is designed to be used within the context of the
-# Irrgarten game, but it can also be used independently for other
-# purposes that require random number generation and probability-based
-# calculations.
-#
-# Example usage:
-#
-#   # Generate a random position within a given range
-#   pos = Irrgarten::Dice.random_pos(10)
-#
-#   # Roll a dice to determine the starting player
-#   player_index = Irrgarten::Dice.who_starts(4)
-#
-#   # Generate a random value for intelligence
-#   intelligence = Irrgarten::Dice.random_intelligence
-#
-#   # Check if a player should be resurrected
-#   should_resurrect = Irrgarten::Dice.resurrect_player
-#   ...
-#
+# encoding:utf-8
 module Irrgarten
 
+# Class that simulates the dice used in the game. It has methods to generate
+# random numbers and booleans, and to decide the next step of a player or
+# monster.
 class Dice
     
     # Max uses of weapons and shields
@@ -137,6 +111,26 @@ class Dice
         discard_probability = 1 - (uses_left / @@MAX_USES)
         @generator.rand < discard_probability
     end
+
+    # Decides the next step of a player or monster. If the random
+    # number generated is less than the intelligence, the player will move
+    # in the desired direction. Otherwise, the player will move in a random
+    # valid direction.
+    # @param preference [String] the desired direction of the player
+    # @param valid_moves [Array<String>] the valid directions the player can move
+    # @param intelligence [Float] the intelligence of the player
+    # @return [String] the next step of the player
+    def self.next_step(preference, valid_moves, intelligence)
+        # Probability of moving in the desire direction
+        probability = @generator.rand*@@MAX_INTELLIGENCE
+        if probability < intelligence
+            preference
+        else
+            # Generate a random valid move
+            random_index_direction = @generator.rand(valid_moves.length)
+            valid_moves[random_index_direction]
+        end
+    end
 end
 
-end 
+end

@@ -6,29 +6,53 @@ import java.util.ArrayList;
  * It manages the players, monsters, labyrinth, and game state.
  */
 public class Game {
+    /**
+     * Max rounds of the game
+     */
     public static final int MAX_ROUNDS = 10;
+    /**
+     * The index of the current player
+     */
     private int currentPlayerIndex;
+    /**
+     * Log of the game
+     */
     private String log;
 
+    /**
+     * The player who is playing at the moment
+     */
     private Player currentPlayer;
+    
+    /**
+     * Labyrinth of the game
+     */
     private Labyrinth labyrinth;
+    /**
+     * Monsters in the game at the moment
+     */
     private ArrayList<Monster> monsters;
+    
+    /**
+     * Players in the game at the moment
+     */
     private ArrayList<Player> players;
 
     /**
      * Constructs a new Game object with the specified number of players.
-     *
      * @param nplayers The number of players in the game.
      */
     public Game(int nplayers){
-        log = "";
-        players = new ArrayList<Player>(0);
+        this.log = "";
+        this.players = new ArrayList<Player>(nplayers);
         for (int i = 0; i < nplayers; i++){
-            players.add(new Player((char)(i+'0'), Dice.randomIntelligence(), Dice.randomStrength()));
+            Player newPlayer = new Player((char)(i+'0'), 
+                            Dice.randomIntelligence(), Dice.randomStrength());
+            this.players.add(newPlayer);
         }
-        currentPlayerIndex = Dice.whoStarts(nplayers);
-        currentPlayer = players.get(currentPlayerIndex);
-        monsters = new ArrayList<Monster> (0);
+        this.currentPlayerIndex = Dice.whoStarts(nplayers);
+        this.currentPlayer = this.players.get(currentPlayerIndex);
+        this.monsters = new ArrayList<Monster> (0);
         this.configureLabyrinth();
     }
 
@@ -51,18 +75,18 @@ public class Game {
      */
     public boolean nextStep(Directions preferredDirection) {
         this.log = ""; // Clear the log of the game because of a new step
-        boolean dead = currentPlayer.dead();
+        boolean dead = this.currentPlayer.dead();
 
         if(!dead) {
             Directions direction = this.actualDirection(preferredDirection);
             if(direction!=preferredDirection)
                 this.logPlayerNoOrders();
-            Monster monster = labyrinth.putPlayer(direction, currentPlayer);
+            Monster monster = this.labyrinth.putPlayer(direction, this.currentPlayer);
             
             if(monster==null) // There is no monster
                 this.logNoMonster();
             else{
-                GameCharacter winner = combat(monster);
+                GameCharacter winner = this.combat(monster);
                 this.manageReward(winner);
             }
         }
@@ -70,9 +94,7 @@ public class Game {
             this.manageResurrection();
         }
         
-        
-        boolean endGame = finished();
-        
+        boolean endGame = this.finished();
         if(!endGame){
             this.nextPlayer();
         }
@@ -86,14 +108,13 @@ public class Game {
      * @return The current game state.
      */
     public GameState getGameState() {
-        String labyrinth_s = labyrinth.toString();
-        String players_s = players.toString();
-        String monsters_s = monsters.toString();
+        String labyrinth_s = this.labyrinth.toString();
+        String players_s = this.players.toString();
+        String monsters_s = this.monsters.toString();
         int currentP = this.currentPlayerIndex;
         boolean winner = this.finished();
 
         GameState state = new GameState(labyrinth_s, players_s, monsters_s, currentP, winner, this.log);
-
         return state;
     }
 
@@ -101,45 +122,43 @@ public class Game {
      * Configures the labyrinth with the specified parameters.
      */
     private void configureLabyrinth(){
-        int nRows = 3, nCols = 3;
-        int exitRow = 0, exitCol = 2;
-        labyrinth = new Labyrinth(nRows,nCols,exitRow, exitCol);
+        int nRows = 5, nCols = 5;
+        int exitRow = 1, exitCol = 1;
         
-        labyrinth.addBlock(Orientation.HORIZONTAL, 0, 0, 2);
-        labyrinth.addBlock(Orientation.VERTICAL, 1, 0, 3);
-        labyrinth.addBlock(Orientation.HORIZONTAL, 2, 1, 2);
-        labyrinth.addBlock(Orientation.VERTICAL, 1, 2, 1);
+        this.labyrinth = new Labyrinth(nRows,nCols,exitRow, exitCol);
+        this.labyrinth.addBlock(Orientation.HORIZONTAL, 0, 0, 2);
 
-	/*
         Monster goblin = new Monster ("Goblin", Dice.randomIntelligence(), Dice.randomStrength());
-        labyrinth.addMonster(2,2,goblin);
-        monsters.add(goblin);
-        Monster piglin = new Monster ("Piglin", Dice.randomIntelligence(), Dice.randomStrength());
-        labyrinth.addMonster(4, 4, piglin);
-        monsters.add(piglin);
-        Monster zombie = new Monster ("Zombie", Dice.randomIntelligence(), Dice.randomStrength());
-        labyrinth.addMonster(4, 0, zombie);
-        monsters.add(zombie);
-        Monster skeleton = new Monster ("Skeleton", Dice.randomIntelligence(), Dice.randomStrength());
-        labyrinth.addMonster(0, 4, skeleton);
-        monsters.add(skeleton);
-	*/
+        this.labyrinth.addMonster(2,2,goblin);
+        this.monsters.add(goblin);
         
-        labyrinth.spreadPlayers(this.players);
+        Monster piglin = new Monster ("Piglin", Dice.randomIntelligence(), Dice.randomStrength());
+        this.labyrinth.addMonster(4, 4, piglin);
+        this.monsters.add(piglin);
+        
+        Monster zombie = new Monster ("Zombie", Dice.randomIntelligence(), Dice.randomStrength());
+        this.labyrinth.addMonster(4, 0, zombie);
+        this.monsters.add(zombie);
+        
+        Monster skeleton = new Monster ("Skeleton", Dice.randomIntelligence(), Dice.randomStrength());
+        this.labyrinth.addMonster(0, 4, skeleton);
+        this.monsters.add(skeleton);
+        
+        this.labyrinth.spreadPlayers(this.players);
     }
 
     /**
      * Advances the game to the next player.
      */
     private void nextPlayer(){
-        int nPlayers = players.size();
-        if (currentPlayerIndex == nPlayers-1){
-            currentPlayerIndex = 0;
+        int nPlayers = this.players.size();
+        if (this.currentPlayerIndex == nPlayers-1){
+            this.currentPlayerIndex = 0;
         } else {
-            currentPlayerIndex++;
+            this.currentPlayerIndex++;
         }
 
-        currentPlayer = this.players.get(currentPlayerIndex);
+        this.currentPlayer = this.players.get(this.currentPlayerIndex);
     }
 
     /**
@@ -171,7 +190,7 @@ public class Game {
         boolean lose = monster.defend(playerAttack);
         float monsterAttack;
         
-        while(!lose && (rounds< Game.MAX_ROUNDS)){
+        while(!lose && (rounds < Game.MAX_ROUNDS)){
             winner = GameCharacter.MONSTER;
             rounds++;
             monsterAttack = monster.attack();
@@ -195,7 +214,7 @@ public class Game {
      */
     private void manageReward(GameCharacter winner) {
         if (winner == GameCharacter.PLAYER){
-            currentPlayer.receiveReward();
+            this.currentPlayer.receiveReward();
             this.logPlayerWon();
         }
         else
@@ -211,7 +230,10 @@ public class Game {
         boolean resurrect = Dice.resurrectPlayer();
         if (resurrect){
             this.currentPlayer.resurrect();
-            this.logResurrected();  
+            this.currentPlayer = new FuzzyPlayer(this.currentPlayer);
+            this.players.set(this.currentPlayerIndex, this.currentPlayer);
+            this.labyrinth.updatePlayer(currentPlayer);
+            this.logResurrected();
         }
         else
             this.logPlayerSkipTurn();
@@ -221,50 +243,54 @@ public class Game {
      * Logs the player's victory.
      */
     private void logPlayerWon(){
-        log += "Player number " + currentPlayer.getNumber() + " has won. \n";
+        this.log += "Player number " + this.currentPlayer.getNumber() + 
+                    " has won the combat. \n";
     }
 
     /**
      * Logs the monster's victory.
      */
     private void logMonsterWon(){
-        log += "The monster has won\n";
+        this.log += "The monster has won the combat\n";
     }
     
     /**
      * Logs the resurrection of the player.
      */
     private void logResurrected(){
-        log += "The player" + currentPlayer.getNumber() + " has resurrected.\n";
+        this.log += "The player" + this.currentPlayer.getNumber() + 
+                    " has resurrected.\n";
     }
     
     /**
      * Logs the player's turn skip.
      */
     private void logPlayerSkipTurn(){
-        log += "Player number " + currentPlayer.getNumber() + " has lost the turn"
-          + " because he was dead. \n";
+        this.log += "Player number " + this.currentPlayer.getNumber() + 
+                    " has lost the turn because he was dead. \n";
     }
     
     /**
      * Logs the player's turn skip.
      */
     private void logPlayerNoOrders(){
-        log += "Player number " + currentPlayer.getNumber() + " moved somewhere else.\n"; 
+        this.log += "Player number " + this.currentPlayer.getNumber() + 
+                    " moved somewhere else.\n"; 
     }
     
     /**
      * Logs the player's turn skip.
      */
     private void logNoMonster(){
-        log += "Player number " + currentPlayer.getNumber() + " couldn't move or moved to an empty box.\n";
+        this.log += "Player number " + this.currentPlayer.getNumber() + 
+                    " couldn't move or moved to an empty box.\n";
     }
     
     /**
      * Logs the number of rounds passed.
      */
     private void logRounds(int rounds, int max){
-        log += "Rounds passed: " + rounds + " / " + max + "\n"; 
+        this.log += "Rounds passed: " + rounds + " / " + max + "\n"; 
     }
 }
 

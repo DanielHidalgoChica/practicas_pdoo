@@ -1,7 +1,10 @@
 #encoding: utf-8
+require_relative "dice"
+require_relative 'labyrinth_character'
 module Irrgarten
     # The Monster class represents a monster in the Irrgarten game.
-    class Monster
+    class Monster < LabyrinthCharacter
+        # The initial health of a monster.
         @@INITIAL_HEALTH = 5
 
         # Initializes a new instance of the Monster class.
@@ -10,20 +13,9 @@ module Irrgarten
         # @param intelligence [Integer] The intelligence level of the monster.
         # @param strength [Integer] The strength level of the monster.
         def initialize(name, intelligence, strength)
-            @name = name
-            @intelligence = intelligence
-            @strength = strength
-            @health = @@INITIAL_HEALTH
-            @row = nil
-            @col = nil
+            super(name, intelligence, strength, @@INITIAL_HEALTH)
         end
 
-        # Checks if the monster is dead.
-        #
-        # @return [Boolean] Returns true if the monster's health is less than or equal to 0, false otherwise.
-        def dead
-            @health <= 0
-        end
 
         # Performs an attack action.
         #
@@ -52,31 +44,11 @@ module Irrgarten
             is_dead
         end
 
-        # Sets the position of the monster in the Irrgarten game.
-        #
-        # @param row [Integer] The row position of the monster.
-        # @param col [Integer] The column position of the monster.
-        def set_pos(row, col)
-            @row = row
-            @col = col
-            nil # Return nil to protect the class
-        end
-
         # Returns a string representation of the monster's state.
-        #
         # @return [String] Returns a string containing the monster's name, intelligence, strength, health, and position.
         def to_s
-            ret ="M[" + "#{@name}" +
-                    ", Intelligence: #{@intelligence}" +
-                    ", Strength: #{@strength}" +
-                    ", Health: #{@health}" +
-                    ", Pos(#{@row}, #{@col})]\n"
-            ret
+            "M[#{super}]"
         end
 
-        # Decreases the monster's health by 1.
-        def got_wounded
-            @health -= 1
-        end
     end
 end

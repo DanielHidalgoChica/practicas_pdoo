@@ -1,9 +1,10 @@
 package irrgarten;
 
+import java.util.ArrayList;
+import java.util.Random;
 /**
  * This class take all the decisions of the game that depend on luck. It will
  * produce a series of random values bounded with some given parameters.
- * @author luisvaldivieso
  */
 public class Dice {
     /**
@@ -48,7 +49,7 @@ public class Dice {
     /**
      * Random object used to generate a stream of pseudorandom numbers
      */
-    private static java.util.Random generator = new java.util.Random();
+    private static Random generator = new Random();
     
     /**
      * Return a random column or row
@@ -163,8 +164,22 @@ public class Dice {
      * @return true if a weapon must be discarded, false otherwise
      */
     public static boolean discardElement(int usesLeft){
-        float discardProbability = 1 - ((float) usesLeft / MAX_USES);
+        float discardProbability = 1f - ((float) usesLeft / MAX_USES);
         return (generator.nextFloat() < discardProbability);
 
+    }
+    
+    public static Directions nextStep(Directions preference, ArrayList<Directions> validMoves,
+                                        float intelligence ){
+        int randomIndexDirection;
+        // Probability of moving in the desired direction
+        float probability = generator.nextFloat()*MAX_INTELLIGENCE;
+        if ( probability < intelligence)
+            return preference;
+        else{
+            // Generate a random valid move
+            randomIndexDirection = generator.nextInt(validMoves.size());
+            return validMoves.get(randomIndexDirection);
+        }
     }
 }

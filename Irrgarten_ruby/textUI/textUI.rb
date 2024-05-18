@@ -67,6 +67,7 @@ module UI
         puts "Current Player: " + game_state.current_player.to_s
         puts "Log \n" + game_state.log.to_s
         puts "\n" + game_state.labyrinth.to_s
+        puts "Winner: " + game_state.winner.to_s
 
     end
 

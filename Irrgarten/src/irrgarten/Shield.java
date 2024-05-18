@@ -2,19 +2,8 @@ package irrgarten;
 
 /**
  * Represents a shield in the game Irrgarten
- * @author Daniel Hidalgo Chica and Luis Esteban Valdivieso
  */
-public class Shield {
-    /**
-     * The protection that the shield offers.
-     */
-    private float protection;
-
-    /**
-     * The number of uses left for the shield.
-     */
-    private int uses;
-    
+public class Shield extends CombatElement {
     /**
      * Parameterized constructor to create a Shield object.
      * 
@@ -22,8 +11,7 @@ public class Shield {
      * @param uses the number of uses left for the shield
      */
     Shield(float protection, int uses){
-        this.protection = protection;
-        this.uses = uses;
+        super(protection,uses);
     }
     
     /**
@@ -32,21 +20,7 @@ public class Shield {
      * @return the protection value as a float
      */
     public float protect(){
-        if (uses > 0){
-            uses--;
-            return protection;
-        }
-        else return 0;
-    }
-    
-    /**
-     * Decides if a shield must be discarded.
-     * 
-     * @return true if the shield must be discarded, false otherwise
-     */
-    public boolean discard(){
-        Dice dice = new Dice();
-        return dice.discardElement(uses); 
+        return this.produceEffect();
     }
     
     /**
@@ -54,7 +28,8 @@ public class Shield {
      * 
      * @return a string with information about the shield in the format "S[protection,uses]"
      */
+    @Override
     public String toString(){
-        return "S["+protection+","+uses+"]";
+        return "S"+super.toString();
     }
 }

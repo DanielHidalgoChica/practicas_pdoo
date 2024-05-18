@@ -1,8 +1,6 @@
 package irrgarten;
-
 /**
- *
- * @author luisvaldivieso
+ * Enum for the game characters.
  */
 public enum GameCharacter {
     PLAYER,MONSTER
