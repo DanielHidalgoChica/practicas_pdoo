@@ -8,6 +8,8 @@ class CombatElement
         @uses = uses
     end
 
+    protected
+
     # @return the effect of the CombatElement
     def produce_effect
         if @uses > 0
@@ -17,6 +19,8 @@ class CombatElement
             0.0
         end
     end
+
+    public
 
     # Discards the CombatElement from the player's inventory
     # @return [bool] true if the element was discarded, false otherwise
@@ -29,7 +33,6 @@ class CombatElement
         "[#{@effect},#{@uses}]"
     end
 
-    protected :produce_effect
 end
 
 end

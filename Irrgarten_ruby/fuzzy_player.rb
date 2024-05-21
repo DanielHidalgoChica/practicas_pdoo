@@ -39,6 +39,5 @@ class FuzzyPlayer < Player
         "Fuzzy #{super}"
     end
 
-    protected :defensive_energy
 end
 end

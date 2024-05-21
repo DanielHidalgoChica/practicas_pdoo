@@ -12,8 +12,7 @@ public class Monster extends LabyrinthCharacter{
      * @param strength the strength of the monster
      */
     public Monster(String name, float intelligence, float strength) {
-        super(name,intelligence,strength, INITIAL_HEALTH);
-        this.setPos(-1,-1);
+        super(name,intelligence,strength, Monster.INITIAL_HEALTH);
     }
 
     /**

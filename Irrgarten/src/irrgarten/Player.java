@@ -6,7 +6,8 @@ import java.util.ArrayList;
  */
 public class Player extends LabyrinthCharacter {
 
-    /*
+    /*s
+    
     * The maximum number of weapons a player can have.
     */
     public static final int MAX_WEAPONS = 2;
@@ -154,6 +155,7 @@ public class Player extends LabyrinthCharacter {
     @Override
     public String toString(){
         String ret = "P[" + super.toString()
+                    + ", ConsecHits: " + Integer.toString(this.consecutiveHits) 
                     + "]\n\tWeapons: ";
 	    // Show the weapons
 	    for (Weapon aWeapon : this.weapons) {

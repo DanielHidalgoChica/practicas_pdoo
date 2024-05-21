@@ -18,6 +18,7 @@ class LabyrinthCharacter
     end
 
     # Copy constructor
+    # @param other LabyrinthCharacter to copy
     def copy(other)
         @name = other.name
         @intelligence = other.intelligence

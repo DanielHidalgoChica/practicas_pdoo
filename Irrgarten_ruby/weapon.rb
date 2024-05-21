@@ -1,5 +1,4 @@
 #encoding:utf-8
-require_relative 'dice'
 require_relative 'combat_element'
 module Irrgarten
     # The Irrgarten module contains classes related to weapons in the game.

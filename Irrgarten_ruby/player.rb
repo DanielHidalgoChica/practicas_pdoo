@@ -37,6 +37,8 @@ module Irrgarten
             self.reset_hits
         end
 
+        # Copy constructor
+        # @param other Player to copy
         def copy(other)
             super(other)
             @consecutive_hits = other.consecutive_hits

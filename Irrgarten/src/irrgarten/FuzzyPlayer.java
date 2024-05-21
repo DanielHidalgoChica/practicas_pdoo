@@ -13,8 +13,7 @@ public class FuzzyPlayer extends Player {
      * @param other Player to copy
      */
     public FuzzyPlayer(Player other){
-        super(other.getNumber(), other.getIntelligence(), other.getStrength());
-        this.setPos(other.getRow(), other.getCol());
+        super(other);
     }
     
     /**
@@ -27,7 +26,7 @@ public class FuzzyPlayer extends Player {
     @Override
     public Directions move(Directions direction, 
                             ArrayList<Directions> validMoves){
-        Directions chosenDirection = this.move(direction, validMoves);
+        Directions chosenDirection = super.move(direction, validMoves);
         Directions resultingDirection = 
             Dice.nextStep(chosenDirection, validMoves, this.getIntelligence());
         return resultingDirection;
