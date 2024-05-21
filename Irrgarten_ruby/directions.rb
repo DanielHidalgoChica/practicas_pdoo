@@ -1,4 +1,4 @@
-#encoding:utf-8
+# encoding:utf-8
 module Irrgarten
     
 # Enum type for the directions of the game

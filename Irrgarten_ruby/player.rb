@@ -1,7 +1,11 @@
 #encoding:utf-8
+require_relative 'dice'
+require_relative 'weapon'
+require_relative 'shield'
+require_relative 'labyrinth_character'
 module Irrgarten
     # The Player class represents a player in the Irrgarten game.
-    class Player
+    class Player < LabyrinthCharacter
         # The maximum number of weapons a player can have.
         @@MAX_WEAPONS = 2
 
@@ -21,10 +25,7 @@ module Irrgarten
         # @param strength [Integer] The player's strength level.
         def initialize(number, intelligence, strength)
             @number = number
-            @name = "Player #{@number}"
-            @intelligence = intelligence
-            @strength = strength
-            set_pos(nil,nil)
+            super("Player #{@number}", intelligence, strength, @@INITIAL_HEALTH)
             self.resurrect
         end
 
@@ -36,23 +37,16 @@ module Irrgarten
             self.reset_hits
         end
 
-        attr_reader :row, :col, :number
-
-        # Sets the player's position.
-        #
-        # @param row [Integer] The row position.
-        # @param col [Integer] The column position.
-        def set_pos(row, col)
-            @row = row
-            @col = col
+        # Copy constructor
+        # @param other Player to copy
+        def copy(other)
+            super(other)
+            @consecutive_hits = other.consecutive_hits
+            @number = other.number
+            @weapons = other.weapons
+            @shields = other.shields
         end
-
-        # Checks if the player is dead.
-        #
-        # @return [Boolean] True if the player is dead, false otherwise.
-        def dead
-            @health <= 0
-        end
+        attr_reader :row, :col, :number, :consecutive_hits,  :weapons, :shields
 
         # Moves the player in a given direction.
         # If the direction is not valid, the player will move in the first valid direction.
@@ -63,7 +57,7 @@ module Irrgarten
         def move(direction, valid_moves)
             size = valid_moves.size
             contained = valid_moves.include?(direction)
-            if (size > 0 && !contained)
+            if size > 0 && !contained
                 valid_moves[0]
             else
                 direction
@@ -74,7 +68,7 @@ module Irrgarten
         #
         # @return [Integer] The player's attack power.
         def attack
-            @strength + self.sum_weapons
+            @strength + sum_weapons
         end
 
         # Defends against an attack.
@@ -106,16 +100,10 @@ module Irrgarten
         #
         # @return [String] The player's state.
         def to_s
-            ret = "P[" + @name.to_str +
-                    ", Intelligence: " + @intelligence.to_s +
-                    ", Strength: " + @strength.to_s +
-                    ", Health: " + @health.to_s +
-                    ", Pos(" + @row.to_s + "," + @col.to_s + ")" +
-                    ", ConsecHits: " + @consecutive_hits.to_s +
-                    ", \n\tWeapons: "
-            @weapons.each { |a_weapon| ret += "\n\t" + a_weapon.to_s }
+            ret = "P[#{super}, ConsecHits: #{@consecutive_hits.to_s}] \n\tWeapons: "
+            @weapons.each { |a_weapon| ret += "\n\t#{a_weapon.to_s}" }
             ret += "\n\tShields:"
-            @shields.each { |a_shield| ret += "\n\t" + a_shield.to_s }
+            @shields.each { |a_shield| ret += "\n\t#{a_shield.to_s}" }
             ret
         end
 
@@ -161,6 +149,8 @@ module Irrgarten
             Shield.new(r_protection, r_uses)
         end
 
+        protected
+
         # Calculates the total attack power of all weapons.
         #
         # @return [Integer] The total attack power.
@@ -185,6 +175,8 @@ module Irrgarten
         def defensive_energy
             self.sum_shields + @intelligence
         end
+
+        private
 
         # Manages the player's state when hit.
         # If the player is hit, the consecutive hits counter is increased.
@@ -212,12 +204,7 @@ module Irrgarten
         # Resets the consecutive hits counter.
         def reset_hits
             @consecutive_hits = 0
-        end
-
-        # Decreases the player's health when wounded.
-        def got_wounded
-            @health = @health - 1
-        end
+        end<
 
         # Increases the consecutive hits counter.
         def inc_consecutive_hits

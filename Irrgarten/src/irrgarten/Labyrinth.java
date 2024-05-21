@@ -40,16 +40,16 @@ public class Labyrinth {
         this.nCols = nCols;
         
         // Initialize matrices
-        monsters = new Monster[nRows][nCols];
-        players = new Player[nRows][nCols];
-        labyrinth =  new char[nRows][nCols];
+        this.monsters = new Monster[nRows][nCols];
+        this.players = new Player[nRows][nCols];
+        this.labyrinth =  new char[nRows][nCols];
         
         // Fill labyrinth with empty characters
         for (int i = 0; i < nRows; i++) {
             for (int j = 0; j < nCols; j++){
-                monsters[i][j] = null;
-                players[i][j] = null;
-                labyrinth[i][j] = Labyrinth.EMPTY_CHAR;
+                this.monsters[i][j] = null;
+                this.players[i][j] = null;
+                this.labyrinth[i][j] = Labyrinth.EMPTY_CHAR;
             }
         }
 
@@ -65,7 +65,7 @@ public class Labyrinth {
         for(Player p : players){
             int [] pos = this.randomEmptyPos();
             int nul_val = -1;
-            putPlayer2D(nul_val,nul_val, pos[ROW], pos[COL], p);
+            putPlayer2D(nul_val,nul_val, pos[Labyrinth.ROW], pos[Labyrinth.COL], p);
         }
     }
 
@@ -74,19 +74,20 @@ public class Labyrinth {
      * @return True if a player has reached the exit, false otherwise.
      */
     public boolean haveAWinner(){
-        return (this.players[exitRow][exitCol] != null);
+        return (this.players[this.exitRow][this.exitCol] != null);
     }
 
     /**
      * Convert the labyrinth to a string representation.
      * @return String representation of the labyrinth.
      */
+    @Override
     public String toString(){
         String labyrinthString = "";
-        for (int i = 0; i < nRows; i ++){
+        for (int i = 0; i < this.nRows; i ++){
             labyrinthString += "|";
-            for (int j = 0; j < nCols; j++){
-                labyrinthString += labyrinth[i][j] + "|";
+            for (int j = 0; j < this.nCols; j++){
+                labyrinthString += this.labyrinth[i][j] + "|";
             }
             labyrinthString += "\n";
         }
@@ -101,7 +102,7 @@ public class Labyrinth {
      * @param monster The monster to be added.
      */
     public void addMonster(int row, int col, Monster monster){
-        if (posOK(row, col) && emptyPos(row,col)) {
+        if (this.posOK(row, col) && this.emptyPos(row,col)) {
             // Save a reference to the monster in the corresponding attributes
             this.monsters[row][col] = monster;
             // Set the monster character in the labyrinth
@@ -148,8 +149,8 @@ public class Labyrinth {
         
         int row = startRow, col = startCol;
         
-        while (posOK(row,col) && emptyPos(row,col) && (length > 0)){
-            labyrinth[row][col] = BLOCK_CHAR;
+        while (this.posOK(row,col) && this.emptyPos(row,col) && (length > 0)){
+            this.labyrinth[row][col] = Labyrinth.BLOCK_CHAR;
             length-=1;
             row+=incRow;
             col+=incCol;
@@ -166,16 +167,16 @@ public class Labyrinth {
     public ArrayList<Directions> validMoves(int row, int col) {
         ArrayList<Directions> output = new ArrayList<Directions>(0);
         
-        if (canStepOn(row+1,col))
+        if (this.canStepOn(row+1,col))
             output.add(Directions.DOWN);
         
-        if (canStepOn(row-1,col))
+        if (this.canStepOn(row-1,col))
             output.add(Directions.UP);
         
-        if (canStepOn(row,col+1))
+        if (this.canStepOn(row,col+1))
             output.add(Directions.RIGHT);
         
-        if (canStepOn(row,col-1))
+        if (this.canStepOn(row,col-1))
             output.add(Directions.LEFT);
         
         return output;
@@ -188,8 +189,7 @@ public class Labyrinth {
      * @return True if the position is within the labyrinth bounds, false otherwise.
      */
     private boolean posOK(int row, int col){
-        boolean validPos = (0 <= row) && (row < this.nRows) && (0 <= col) && (col < this.nCols);
-        return validPos;
+        return (0 <= row) && (row < this.nRows) && (0 <= col) && (col < this.nCols);
     }
 
     /**
@@ -209,7 +209,7 @@ public class Labyrinth {
      * @return True if there is a monster at the position, false otherwise.
      */
     private boolean monsterPos(int row, int col){
-	    return (this.labyrinth[row][col] == MONSTER_CHAR);
+	    return (this.labyrinth[row][col] == Labyrinth.MONSTER_CHAR);
     }
 
     /**
@@ -219,7 +219,7 @@ public class Labyrinth {
      * @return True if there is an exit at the position, false otherwise.
      */
     private boolean exitPos(int row, int col){
-	    return (this.labyrinth[row][col] == EXIT_CHAR);
+	    return (this.labyrinth[row][col] == Labyrinth.EXIT_CHAR);
     }
 
     /**
@@ -229,7 +229,7 @@ public class Labyrinth {
      * @return True if there is a combat position at the position, false otherwise.
      */
     private boolean combatPos(int row, int col){
-        return (this.labyrinth[row][col] == COMBAT_CHAR);
+        return (this.labyrinth[row][col] == Labyrinth.COMBAT_CHAR);
     }
 
     /**
@@ -239,15 +239,13 @@ public class Labyrinth {
      * @return True if it is possible to step on the position, false otherwise.
      */
     private boolean canStepOn(int row, int col){
-        boolean validPos = posOK(row, col);
         boolean canStep = false;
-        if(validPos) {
-            boolean empty = emptyPos(row, col);
-            boolean monsterPos = monsterPos(row, col);
-            boolean exit = exitPos(row, col);
+        if(this.posOK(row, col)) {
+            boolean empty = this.emptyPos(row, col);
+            boolean monsterPos = this.monsterPos(row, col);
+            boolean exit = this.exitPos(row, col);
             canStep = empty || monsterPos || exit;
         }
-        
         return canStep;
     }
 
@@ -257,8 +255,8 @@ public class Labyrinth {
      * @param col The column index of the old position.
      */
     private void updateOldPos(int row, int col){
-        if (posOK(row, col)) {
-            if (combatPos(row, col))
+        if (this.posOK(row, col)) {
+            if (this.combatPos(row, col))
                 this.labyrinth[row][col] = Labyrinth.MONSTER_CHAR;
             else 
                 this.labyrinth[row][col] = Labyrinth.EMPTY_CHAR;
@@ -277,13 +275,13 @@ public class Labyrinth {
         int [] pos = {row,col};
         switch (direction){
             case LEFT: 
-                pos[COL]--;  break;
+                pos[Labyrinth.COL]--;  break;
             case RIGHT:
-                pos[COL]++;  break;
+                pos[Labyrinth.COL]++;  break;
             case UP:
-                pos[ROW]--;  break;
+                pos[Labyrinth.ROW]--;  break;
             case DOWN:
-                pos[ROW]++;  break; 
+                pos[Labyrinth.ROW]++;  break; 
         }
         return pos;
     }
@@ -297,7 +295,7 @@ public class Labyrinth {
         int rRow = Dice.randomPos(this.nRows);
         int rCol = Dice.randomPos(this.nCols);
 
-        while (!posOK(rRow, rCol) || !emptyPos(rRow, rCol)) {
+        while (!this.posOK(rRow, rCol) || !this.emptyPos(rRow, rCol)) {
             rRow = Dice.randomPos(this.nRows);
             rCol = Dice.randomPos(this.nCols);
         }
@@ -318,18 +316,16 @@ public class Labyrinth {
      */
     private Monster putPlayer2D (int oldRow, int oldCol, int row, int col, Player player){
         Monster output = null;
-        if (canStepOn(row,col)){
+        if (this.canStepOn(row,col)){
             
-            if(posOK(oldRow,oldCol)){
+            if(this.posOK(oldRow,oldCol)){
                 Player p = this.players[oldRow][oldCol];
                 if(p == player){
                     this.updateOldPos(oldRow,oldCol);
                     this.players[oldRow][oldCol] = null;
                 }
             }
-            
-            
-            if(monsterPos(row,col)){
+            if(this.monsterPos(row,col)){
                 this.labyrinth[row][col]=COMBAT_CHAR;
                 output = this.monsters[row][col];
             }
@@ -344,5 +340,13 @@ public class Labyrinth {
         
         return output;
     }
-
+    
+    /**
+     * Updates the player in the labyrinth after moving.
+     * @param player The player to be updated
+     */
+    public void updatePlayer(Player player){
+        if(this.players[player.getRow()][player.getCol()]!= null)
+           this.players[player.getRow()][player.getCol()] = player;
+    }
 }

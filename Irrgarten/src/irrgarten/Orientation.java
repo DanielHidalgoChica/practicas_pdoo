@@ -1,8 +1,7 @@
 package irrgarten;
 
 /**
- *  Orientation enum type
- * @author luisvaldivieso
+ * Enum for the orientation of the labyrinth.
  */
 public enum Orientation {
     VERTICAL, HORIZONTAL

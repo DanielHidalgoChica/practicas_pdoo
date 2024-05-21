@@ -4,10 +4,10 @@ import java.util.ArrayList;
 /**
  * The Player class represents a player in the game.
  */
-public class Player {
-    // Constants
+public class Player extends LabyrinthCharacter {
 
-    /*
+    /*s
+    
     * The maximum number of weapons a player can have.
     */
     public static final int MAX_WEAPONS = 2;
@@ -27,38 +27,11 @@ public class Player {
      */
     public static final int HITS2LOSE = 3;
     
-    // Attributes
-    /**
-     * The player's name.
-     */
-    private String name;
-
     /**
      * The player number.
      */
-    private char number;
-
-    /**
-     * The player's intelligence level.
-     */
-    private float intelligence;
-
-    /**
-     * The player's strength level.
-     */
-    private float strength;
-
-    /**
-     * The player's health.
-     */
-    private float health;
-
-    /**
-     * The player's position.
-     */
-    private int row;
-    private int col;
-
+    private final char number;
+    
     /**
      * The number of consecutive hits the player has received.
      */
@@ -70,6 +43,8 @@ public class Player {
     private ArrayList<Weapon> weapons;
     private ArrayList<Shield> shields;
 
+    private ShieldCardDeck shieldCardDeck;
+    private WeaponCardDeck weaponCardDeck;
     /**
      * Parametrized constructor to create a Player object.
      * @param number The player number.
@@ -77,43 +52,34 @@ public class Player {
      * @param strength The strength level of the player.
      */
     public Player(char number, float intelligence, float strength) {
+        super("Player " + (char) number, intelligence, strength, (float) Player.INITIAL_HEALTH);
         this.number = number;
-        this.name = "Player # " + number;
-        this.intelligence = intelligence;
-        this.strength = strength;
-        this.health = INITIAL_HEALTH;;
-        weapons = new ArrayList<Weapon>(0);
-        shields = new ArrayList<Shield> (0);
-        // Put the rest of the attributes to default
-        resurrect(); 
+        this.weapons = new ArrayList<Weapon>(0);
+        this.shields = new ArrayList<Shield> (0);
+        this.shieldCardDeck = new ShieldCardDeck();
+        this.weaponCardDeck = new WeaponCardDeck();
+        this.resetHits();
     }
 
+    public Player(Player other){
+        super(other);
+        this.number = other.number;
+        this.weapons = other.weapons;
+        this.shields = other.shields;
+        this.shieldCardDeck = other.shieldCardDeck;
+        this.weaponCardDeck = other.weaponCardDeck;
+        this.consecutiveHits = other.consecutiveHits;
+    }
     /**
      * Resurrects the player by resetting their attributes.
      */
     public void resurrect() {
-        weapons.clear();
-        shields.clear();
-        health = INITIAL_HEALTH;
-        resetHits();
+        this.weapons.clear();
+        this.shields.clear();
+        this.setHealth(Player.INITIAL_HEALTH);
+        this.resetHits();
     }
     
-    /**
-     * Gets the row position of the player.
-     * @return The row position.
-     */
-    public int getRow() {
-        return this.row;
-    }
-
-    /**
-     * Gets the column position of the player.
-     * @return The column position.
-     */
-    public int getCol() {
-        return this.col;
-    }
-
     /**
      * Gets the player number.
      * @return The player number.
@@ -122,24 +88,6 @@ public class Player {
         return this.number;
     }
 
-    /**
-     * Sets the position of the player.
-     * @param row The row position.
-     * @param col The column position.
-     */
-    public void setPos(int row, int col){
-        this.row = row;
-        this.col = col;
-    }
-
-    /**
-     * Checks if the player is dead.
-     * @return true if the player is dead, false otherwise.
-     */
-    public boolean dead(){
-        return (this.health <= 0);
-    }
-    
     /**
      * Moves the player in the specified direction.
      * @param direction The direction to move.
@@ -161,8 +109,9 @@ public class Player {
      * Calculates the attack power of the player.
      * @return The attack power.
      */
+    @Override
     public float attack(){
-        return this.strength + this.sumWeapons();
+        return this.getStrength() + this.sumWeapons();
     }
     
     /**
@@ -170,9 +119,9 @@ public class Player {
      * @param receivedAttack The attack power received.
      * @return true if the player successfully defended, false otherwise.
      */
+    @Override
     public boolean defend(float receivedAttack){
-        boolean lose = manageHit(receivedAttack);
-        return lose;
+        return this.manageHit(receivedAttack);
     }
     
     /**
@@ -195,22 +144,20 @@ public class Player {
         }
         
         int extraHealth = Dice.healthReward();
-        this.health+=extraHealth;
+        float newHealth = this.getHealth() + extraHealth;
+        this.setHealth(newHealth);
     }
     
     /**
      * Returns a string representation of the player.
      * @return The string representation of the player.
      */
+    @Override
     public String toString(){
-        String ret = "P[" + this.name
-                    + ", Intelligence: " + Float.toString(intelligence)
-                    + ", Strength: "+ Float.toString(strength)
-                    + ", Health: "+  Float.toString(health)
-                    + ", Pos:(" + Integer.toString(row) + "," + Integer.toString(col) + ")"
-                    + ", ConsecHits: "+  Integer.toString(this.consecutiveHits)
+        String ret = "P[" + super.toString()
+                    + ", ConsecHits: " + Integer.toString(this.consecutiveHits) 
                     + "]\n\tWeapons: ";
-	    // Muestro las armas
+	    // Show the weapons
 	    for (Weapon aWeapon : this.weapons) {
 	        ret +=  "\n\t" + aWeapon.toString();
 	    }
@@ -230,7 +177,7 @@ public class Player {
         
         this.weapons.removeIf(wi -> wi.discard());
         int size = this.weapons.size();
-        if(size < MAX_WEAPONS)
+        if(size < Player.MAX_WEAPONS)
             this.weapons.add(w);
     }
 
@@ -252,10 +199,7 @@ public class Player {
      * @return The new weapon.
      */
     private Weapon newWeapon(){
-        float rPower = Dice.weaponPower();
-        int rUses = Dice.usesLeft();
-        Weapon newWeapon = new Weapon(rPower, rUses);
-        return newWeapon;
+        return this.weaponCardDeck.nextCard();
     }
 
     /**
@@ -263,19 +207,16 @@ public class Player {
      * @return The new shield.
      */
     private Shield newShield(){
-        float rProtection = Dice.shieldPower();
-        int rUses = Dice.usesLeft();
-        Shield newShield = new Shield(rProtection, rUses);
-        return newShield;
+        return this.shieldCardDeck.nextCard();
     }
     
     /**
      * Calculates the sum of the weapons' attack power.
      * @return The sum of the weapons' attack power.
      */
-    private float sumWeapons(){
+    protected float sumWeapons(){
         float sum = 0; 
-        for (Weapon aWeapon : weapons){
+        for (Weapon aWeapon : this.weapons){
             sum += aWeapon.attack();
         }
         return sum;
@@ -285,7 +226,7 @@ public class Player {
      * Calculates the sum of the shields' protection.
      * @return The sum of the shields' protection.
      */
-    private float sumShields(){
+    protected float sumShields(){
         float sum = 0;
         for (Shield aShield : this.shields){
             sum += aShield.protect();
@@ -297,8 +238,8 @@ public class Player {
      * Calculates the defensive energy of the player.
      * @return The defensive energy.
      */
-    private float defensiveEnergy(){
-        return this.sumShields() + this.intelligence;
+    protected float defensiveEnergy(){
+        return this.sumShields() + this.getIntelligence();
     }
 
     /**
@@ -333,13 +274,6 @@ public class Player {
         this.consecutiveHits = 0;
     }
 
-    /**
-     * Decreases the player health by 1.
-     */
-    private void gotWounded(){
-        this.health -= 1;
-    }
-    
     /**
      * Increases the consecutive hits counter.
      */

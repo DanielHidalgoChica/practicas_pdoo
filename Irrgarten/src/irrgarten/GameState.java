@@ -2,13 +2,9 @@ package irrgarten;
 
 /**
  * This class allow to store a representation of the global state of the game.
- * @author luisvaldivieso
- */
-/**
- * Represents the state of the game.
  */
 public class GameState {
-
+    
     private String labyrinth;
     private String players;
     private String monsters;

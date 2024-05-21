@@ -1,4 +1,11 @@
-#encoding:utf-8
+# encoding:utf-8
+require_relative 'dice'
+require_relative 'game_character'
+require_relative 'game_state'
+require_relative 'player'
+require_relative 'fuzzy_player'
+require_relative 'labyrinth'
+require_relative 'monster'
 module Irrgarten
     # The Game class represents a game of Irrgarten.
     class Game
@@ -14,8 +21,8 @@ module Irrgarten
             @current_player_index = Dice.who_starts(nplayers)
             @current_player = @players[@current_player_index]
             @monsters = Array.new(0)
-            @log = ""
-            configure_labyrinth
+            @log = ''
+            self.configure_labyrinth
         end
 
         # Checks if the game has finished.
@@ -28,7 +35,7 @@ module Irrgarten
         # @param preferred_direction [Symbol] The preferred direction to move.
         # @return [Boolean] True if the game has finished, false otherwise.
         def next_step(preferred_direction)
-            @log=""
+            @log=''
             dead = @current_player.dead
 
             if !dead
@@ -60,11 +67,11 @@ module Irrgarten
         # @return [GameState] The current state of the game.
         def game_state
             labyrinth_s = @labyrinth.to_s
-            players_s = ""
+            players_s = ''
             @players.each do |player|
                 players_s += player.to_s + "\n"
             end
-            monsters_s = ""
+            monsters_s = ''
             @monsters.each do |monster|
                 monsters_s += monster.to_s + "\n"
             end
@@ -87,19 +94,19 @@ module Irrgarten
             @labyrinth.add_block(Orientation::HORIZONTAL, 0, 0, 2)
             @labyrinth.add_block(Orientation::VERTICAL, 0, 1, 2)
 
-            goblin = Monster.new("Goblin", Dice.random_intelligence, Dice.random_strength)
+            goblin = Monster.new('Goblin', Dice.random_intelligence, Dice.random_strength)
             @labyrinth.add_monster(2, 2, goblin)
             @monsters << goblin
 
-            piglin = Monster.new("Piglin", Dice.random_intelligence, Dice.random_strength)
+            piglin = Monster.new('Piglin', Dice.random_intelligence, Dice.random_strength)
             @labyrinth.add_monster(4, 4, piglin)
             @monsters << piglin
 
-            zombie = Monster.new("Zombie", Dice.random_intelligence, Dice.random_strength)
+            zombie = Monster.new('Zombie', Dice.random_intelligence, Dice.random_strength)
             @labyrinth.add_monster(4, 0, zombie)
             @monsters << zombie
 
-            skeleton = Monster.new("Skeleton", Dice.random_intelligence, Dice.random_strength)
+            skeleton = Monster.new('Skeleton', Dice.random_intelligence, Dice.random_strength)
             @labyrinth.add_monster(0, 4, skeleton)
             @monsters << skeleton
 
@@ -139,7 +146,7 @@ module Irrgarten
 
             while (!lose && rounds < @@MAX_ROUNDS)
                 winner = GameCharacter::MONSTER
-                rounds+=1
+                rounds += 1
                 monster_attack = monster.attack
                 lose = @current_player.defend(monster_attack)
                 if !lose
@@ -148,7 +155,6 @@ module Irrgarten
                     lose = monster.defend(player_attack)
                 end
             end
-
             self.log_rounds(rounds, @@MAX_ROUNDS)
             winner
         end
@@ -172,6 +178,9 @@ module Irrgarten
             resurrect = Dice.resurrect_player
             if resurrect
                 @current_player.resurrect
+                @current_player = FuzzyPlayer.new(@current_player)
+                @players[@current_player_index]=@current_player
+                @labyrinth.update_player(@current_player)
                 self.log_resurrected
             else
                 self.log_player_skip_turn
@@ -180,42 +189,42 @@ module Irrgarten
 
         # Logs that the current player has won the game.
         def log_player_won
-            @log += "Player number " + @current_player.number.to_s + " has won. \n"
+            @log += 'Player number ' + @current_player.number.to_s + " has won the combat. \n"
         end
 
         # Logs that the monster has won the game.
         def log_monster_won
-            @log += "The monster has won \n"
+            @log += "The monster has won the combat\n"
         end
 
         # Logs that the current player has been resurrected.
         def log_resurrected
-            @log += "The player " + @current_player.number.to_s + " has resurrected.\n"
+            @log += 'The player ' + @current_player.number.to_s + " has resurrected.\n"
         end
 
         # Logs that the current player has skipped a turn because they were dead.
         def log_player_skip_turn
-            @log += "Player number " + @current_player.number.to_s + " has lost the turn " +
-                "because they were dead. \n"
+            @log += 'Player number ' + @current_player.number.to_s + ' has lost the turn ' +
+                    "because it was dead. \n"
         end
 
         # Logs that the current player couldn't follow the instructions from the human player.
         def log_player_no_orders
-            @log += "Player number " + @current_player.number.to_s + " couldn't follow " +
-                "the instructions from the human player. \n"
+            @log += 'Player number ' + @current_player.number.to_s + " couldn't follow " +
+                    "the instructions from the human player. \n"
         end
 
         # Logs that the current player couldn't move or moved to an empty box.
         def log_no_monster
-            @log += "Player number " + @current_player.number.to_s + " couldn't move or " +
-                "moved to an empty box. \n"
+            @log += 'Player number ' + @current_player.number.to_s + " couldn't move or " +
+                    "moved to an empty box. \n"
         end
 
         # Logs the number of rounds passed in the game.
         # @param rounds [Integer] The number of rounds passed.
         # @param max [Integer] The maximum number of rounds.
         def log_rounds(rounds, max)
-            @log += "Rounds passed " + rounds.to_s + " / " + max.to_s + "\n"
+            @log += 'Rounds passed ' + rounds.to_s + ' / ' + max.to_s + "\n"
         end
     end
 end

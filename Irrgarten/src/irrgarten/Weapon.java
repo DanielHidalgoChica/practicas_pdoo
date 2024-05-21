@@ -2,22 +2,12 @@ package irrgarten;
 
 /**
  * Represents a weapon from the game Irrgarten
- * @author luisvaldivieso
+
  */
 /**
  * The Weapon class represents a weapon with a certain power and number of uses.
  */
-public class Weapon {
-    /**
-     * The power of the weapon.
-     */
-    private float power = 0;
-
-    /**
-     * The number of uses left for the weapon.
-     */
-    private int uses = 0;
-    
+public class Weapon extends CombatElement {
     /**
      * Parameterized constructor to create a Weapon object.
      * 
@@ -25,8 +15,7 @@ public class Weapon {
      * @param uses the number of uses left for the weapon
      */
     public Weapon(float power, int uses) {
-        this.power = power;
-        this.uses = uses;
+        super(power,uses);
     }
     
     /**
@@ -35,22 +24,7 @@ public class Weapon {
      * @return the power of the weapon as a float point number
      */
     public float attack() {
-        if (uses > 0) {
-            uses--;
-            return power;
-        } else {
-            return 0;
-        }
-    }
-    
-    /**
-     * Decides if a weapon must be discarded.
-     * 
-     * @return true if the weapon must be discarded, false otherwise
-     */
-    public boolean discard() {
-        Dice dice = new Dice();
-        return dice.discardElement(uses); 
+        return this.produceEffect();
     }
     
     /**
@@ -58,7 +32,8 @@ public class Weapon {
      * 
      * @return a string with information about the weapon in the format "W[power, uses]"
      */
+    @Override
     public String toString() {
-        return "W[" + power + "," + uses + "]";
+        return "W" + super.toString();
     }
 }
