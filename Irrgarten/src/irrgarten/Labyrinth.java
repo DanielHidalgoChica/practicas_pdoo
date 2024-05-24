@@ -91,6 +91,7 @@ public class Labyrinth {
             }
             labyrinthString += "\n";
         }
+        
         return labyrinthString;
     }
 
