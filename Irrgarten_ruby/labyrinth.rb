@@ -283,7 +283,7 @@ module Irrgarten
         # @param player [Player] the player to update
         # @return [Player] the player in the new position, or nil if there is no player
         def update_player(player)
-            if @players[player.row][player.col].nil?
+            if @players[player.row][player.col] != nil
                 @players[player.row][player.col] = player
             end
         end
